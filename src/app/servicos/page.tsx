@@ -23,15 +23,28 @@ export default function Servicos() {
           }}
         />
         <h1 className="font-heading text-[clamp(3rem,7vw,9rem)] font-bold uppercase leading-[1.1] tracking-tight relative z-[1]">
-          Tem <span className="relative inline-block">
-            <span className="px-2">muito texto</span>
+          Tem{" "}
+          <span className="relative inline-block mb-1 md:mb-0">
+            <span className="pl-2 pr-[8px] md:pr-[16px]">muito</span>
             <span 
-              className="absolute left-0 top-0 w-full h-full px-2 bg-acid text-[#000000] animate-selection" 
+              className="absolute left-0 top-0 w-full h-full pl-2 pr-[8px] md:pr-[16px] bg-acid text-[#000000] animate-selection-w1" 
               aria-hidden="true"
             >
-              muito texto
+              muito
             </span>
-          </span>, mas é necessário**
+          </span>
+          <span className="inline-block">
+            <span className="relative inline-block">
+              <span className="px-2">texto</span>
+              <span 
+                className="absolute left-0 top-0 w-full h-full px-2 bg-acid text-[#000000] animate-selection-w2" 
+                aria-hidden="true"
+              >
+                texto
+              </span>
+            </span>,
+          </span>
+          <span className="ml-[6px] md:ml-[8px]">mas é necessário**</span>
         </h1>
       </header>
 
