@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serviços | rodrigo.wtf</title>
+    <!-- Fonts: Space Grotesk (Headings) and JetBrains Mono (Body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@700&display=swap"
+        rel="stylesheet">
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Navbar (Hierarchical) -->
+    <nav class="neo-nav panel">
+        <a href="index.html" class="neo-logo">rodrigo.wtf</a>
+        <button class="mobile-menu-btn"
+            onclick="document.getElementById('mobile-overlay').classList.add('active')">☰</button>
+        <div class="nav-links">
+            <button class="nav-link-secondary" disabled>Ferramentas</button>
+            <button class="nav-link-secondary" disabled>Conteúdo</button>
+            <a href="index.html#about" class="nav-link-secondary">Sobre</a>
+            <a href="servicos.html" class="nav-link-secondary">Serviços</a>
+        </div>
+    </nav>
+
+    <!-- Mobile Overlay Menu -->
+    <div id="mobile-overlay" class="mobile-overlay">
+        <button class="mobile-close-btn"
+            onclick="document.getElementById('mobile-overlay').classList.remove('active')">[ X ]</button>
+        <div class="nav-links-mobile">
+            <a href="servicos.html" class="nav-link-mobile">Serviços</a>
+            <button class="nav-link-mobile" disabled>Ferramentas</button>
+            <button class="nav-link-mobile" disabled>Conteúdo</button>
+            <a href="index.html#about" class="nav-link-mobile">Sobre</a>
+        </div>
+    </div>
+
+    <main class="bento-grid">
+
+        <!-- Section 1: Services Hero -->
+        <header class="bento-cell hero-cell panel noise-bg">
+            <h1 class="massive-text" style="font-size: clamp(3rem, 7vw, 9rem);">Tem muito texto, mas é necessário**</h1>
+        </header>
+
+        <!-- Section 2: Intro Text -->
+        <article class="bento-cell panel"
+            style="grid-column: span 4; background-color: var(--pure-black); color: var(--pure-white);">
+            <div style="max-width: 900px; font-size: 1.5rem; font-family: var(--font-loud); line-height: 1.4;">
+                <p style="margin-bottom: 2rem;">Se você está procurando uma agência para pegar um template pronto, mudar
+                    as cores, socar um monte de foto de banco de imagens e te cobrar uma fortuna, você está no lugar
+                    errado.</p>
+                <p style="color: var(--acid-green);">Aqui, eu não faço apenas "páginas na internet". Eu resolvo gargalos
+                    do seu negócio. Seja criando um sistema do zero ou te dizendo na cara que você não precisa de mim.
+                </p>
+            </div>
+            <h3 class="terminal-header" style="color: var(--pure-white); margin-top: 4rem;">/// Como o trabalho
+                *realmente* funciona</h3>
+        </article>
+
+        <!-- Section 3: The 5 Accordions (Bento Box Brutalist) -->
+        <article class="bento-cell panel" style="grid-column: span 4;">
+
+            <details class="brutal-details">
+                <summary class="brutal-summary"><span class="summary-icon">[+]</span> 1. A Consultoria Anti-Bullshit
+                </summary>
+                <div class="details-content terminal-params" style="margin: 0; border-top: 0;">
+                    Antes de criar qualquer coisa, nós vamos conversar. Qual é o seu objetivo? Você quer vender? Quer
+                    uma ferramenta interna para organizar a bagunça? Se a sua necessidade for um e-commerce tradicional,
+                    uma ferramenta de 50 reais por mês já resolve o seu problema perfeitamente, e <strong>eu vou te
+                        falar a verdade</strong>. Eu te indico a plataforma, dou a consultoria para implementar e não te
+                    cobro o desenvolvimento de algo que você não precisa. Simples assim.
+                </div>
+            </details>
+
+            <details class="brutal-details">
+                <summary class="brutal-summary"><span class="summary-icon">[+]</span> 2. Imersão no Seu Negócio (eu vou
+                    até você)</summary>
+                <div class="details-content terminal-params" style="margin: 0; border-top: 0;">
+                    Eu não crio soluções tiradas da cartola. Se estivermos na mesma região, eu vou presencialmente até a
+                    sua empresa. Vou observar o seu fluxo, conversar com quem trabalha com você e entender como as
+                    coisas funcionam na prática. Você viu o Arbalest Digital? O meu aplicativo para supermercado que
+                    comecei para resolver o problema do pessoal que anotava a validade dos produtos num caderninho de
+                    papel? É esse tipo de b.o jurássico que eu vou caçar e resolver com tecnologia. Não tem "achismo",
+                    tem pesquisa e validação.
+                </div>
+            </details>
+
+            <details class="brutal-details">
+                <summary class="brutal-summary"><span class="summary-icon">[+]</span> 3. Fim do Design Genérico
+                </summary>
+                <div class="details-content terminal-params" style="margin: 0; border-top: 0;">
+                    Imagem com inteligência artificial? Sim, mas não daquelas sem alma ou as famosas fotos de banco de
+                    imagens com pessoas sorrindo de forma bizarra. Se o cliente entrar no seu site e depois for
+                    fisicamente na sua empresa, ele tem que reconhecer o lugar. Nós vamos usar a realidade da sua
+                    empresa. Então vou gerar todas as imagens necessárias pra você não se preocupar com esse material,
+                    mas vai ser moldada para refletir a <em>sua</em> identidade visual, o <em>seu</em> espaço,
+                    <em>seu</em> serviço e até você.
+                </div>
+            </details>
+
+            <details class="brutal-details">
+                <summary class="brutal-summary"><span class="summary-icon">[+]</span> 4. Presença Digital Sem Virar
+                    "Blogueirinho"</summary>
+                <div class="details-content terminal-params" style="margin: 0; border-top: 0;">
+                    Você não precisa virar escravo do Instagram e postar stories todo santo dia se essa não for a sua
+                    praia. Nós vamos focar na eficiência. Vamos arrumar a casa: unificar suas informações, garantir que
+                    seu horário de atendimento esteja idêntico no Google, no Facebook, no Instagram e no site. Às vezes,
+                    criar um único post foda e patrocinar direito dá dez vezes mais resultado do que ficar criando
+                    conteúdo inútil. É o básico, o eficiente feito com perfeição.
+                </div>
+            </details>
+
+            <details class="brutal-details">
+                <summary class="brutal-summary"><span class="summary-icon">[+]</span> 5. “Um Ecossistema Completo na Sua
+                    Mão”</summary>
+                <div class="details-content terminal-params" style="margin: 0; border-top: 0;">
+                    <p style="margin-bottom: 1rem;">Você não vai ficar no escuro e não vai precisar contratar cinco
+                        pessoas diferentes.</p>
+                    <p>* <strong>Documentação Completa:</strong> Você vai entender exatamente o que está sendo feito,
+                        por que está sendo feito e como usar.</p>
+                    <p>* <strong>Portal do Cliente:</strong> Você terá um login no meu site para acompanhar seu projeto,
+                        ler manuais e tirar dúvidas diretamente comigo.</p>
+                    <p>* <strong>Precisa de mais?</strong> Falta uma logo? Precisa de um vídeo institucional? Eu tenho a
+                        equipe e os parceiros para resolver isso. Entrego o pacote completo.</p>
+                </div>
+            </details>
+
+        </article>
+
+        <!-- Section 4: The Final CTA -->
+        <article class="bento-cell cta-cell panel acid-bg">
+            <h2 class="sub-loud massive-mobile">Vamos descobrir o que você realmente precisa?</h2>
+            <div class="cta-content">
+                <p>Não tem essa de "valor inbox". O projeto custa o que for necessário para resolver o seu problema
+                    específico. Vamos marcar uma conversa e analisar o seu cenário.</p>
+                <div class="cta-action-wrapper">
+                    <a href="https://wa.me/numerodowhatsapp" target="_blank" rel="noopener noreferrer"
+                        class="action-btn giant-btn black-bg">Quero agendar uma análise do meu negócio</a>
+                    <span class="metadata-text">// isso vai abrir o WhatsApp, mas só coloquei um texto tipo
+                        profissional</span>
+                </div>
+            </div>
+        </article>
+
+    </main>
+
+
+
+    <footer class="neo-footer panel">
+        <p>END OF TRANSMISSION // RODRIGO MATOS // 2026</p>
+    </footer>
+
+    <script>
+        // Adjust simple accordion logic for brutalist icon toggle across all details elements
+        const detailsElements = document.querySelectorAll('.brutal-details');
+
+        detailsElements.forEach(details => {
+            const icon = details.querySelector('.summary-icon');
+            if (icon) {
+                details.addEventListener('toggle', (e) => {
+                    icon.textContent = details.open ? '[ - ]' : '[ + ]';
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

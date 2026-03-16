@@ -1,26 +1,294 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: var(--bg);
+  --color-background-alt: var(--bg-alt);
+  --color-foreground: var(--fg);
+  --color-acid: var(--acid);
+  --color-border: var(--border-color);
+  --color-muted: var(--muted);
+  --color-blue: var(--blue);
+  --color-magenta: var(--magenta);
+  --font-heading: var(--font-space-grotesk);
+  --font-body: var(--font-jetbrains-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  --bg: #F4F4F0;
+  --bg-alt: #EAEAE5;
+  /* Slightly darker than background for contrast blocks */
+  --fg: #000000;
+  --acid: #CCFF00;
+  --border-color: #000000;
+  --muted: #444444;
+  --blue: #2006C1;
+  --magenta: #FF00FF;
+}
+
+.dark {
+  --bg: #000000;
+  /* True black */
+  --bg-alt: #000000;
+  /* Pure black, removes gray depth for brutalism */
+  --fg: #FFFFFF;
+  /* True white for text */
+  --acid: #CCFF00;
+  --border-color: #FFFFFF;
+  --muted: #A0A0A0;
+  --blue: #2006C1;
+  /* Same blue as light mode as requested */
+  --magenta: #FF00FF;
+  /* Same magenta as light mode */
+}
+
+/* Base body */
+body {
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body), monospace;
+  padding: 2rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  overflow-x: hidden;
+}
+
+@media (max-width: 640px) {
+  body {
+    padding: 1rem;
+    gap: 1.5rem;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Hard shadow utility */
+.brutal-shadow {
+  box-shadow: 6px 6px 0px var(--border-color);
+}
+
+.brutal-shadow-hover:hover {
+  box-shadow: none;
+  transform: translate(6px, 6px);
+}
+
+/* Brutal button base */
+.brutal-btn {
+  border: 3px solid var(--border-color);
+  box-shadow: 6px 6px 0px var(--border-color);
+  transition: transform 0s steps(1), box-shadow 0s steps(1), background-color 0s steps(1), color 0s steps(1), border-color 0s steps(1);
+  cursor: pointer;
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brutal-btn:active {
+  transform: translate(6px, 6px) !important;
+  box-shadow: none !important;
+}
+
+.brutal-btn:focus-visible {
+  outline: 3px solid var(--acid);
+  outline-offset: 2px;
+}
+
+/* Explicit Button Styles based on Background Surface */
+.brutal-btn-on-light {
+  background-color: var(--acid) !important;
+  color: #000000 !important;
+  border-color: #000000 !important;
+  box-shadow: 6px 6px 0px #000000 !important;
+}
+
+.brutal-btn-on-light:hover {
+  background-color: var(--blue) !important;
+  color: #FFFFFF !important;
+  border-color: var(--blue) !important;
+  box-shadow: none !important;
+  transform: translate(6px, 6px) !important;
+}
+
+.brutal-btn-on-dark {
+  background-color: #000000 !important;
+  color: #FFFFFF !important;
+  border-color: var(--blue) !important;
+  box-shadow: 6px 6px 0px var(--blue) !important;
+}
+
+.brutal-btn-on-dark:hover {
+  background-color: var(--acid) !important;
+  color: #000000 !important;
+  border-color: var(--acid) !important;
+  box-shadow: none !important;
+  transform: translate(6px, 6px) !important;
+}
+
+/* Adaptive Button (Variant 1 in Light mode, Variant 2 in Dark mode) */
+.brutal-btn-adaptive {
+  background-color: var(--acid) !important;
+  color: #000000 !important;
+  border-color: #000000 !important;
+  box-shadow: 6px 6px 0px #000000 !important;
+}
+
+.brutal-btn-adaptive:hover {
+  background-color: var(--blue) !important;
+  color: #FFFFFF !important;
+  border-color: var(--blue) !important;
+  box-shadow: none !important;
+  transform: translate(6px, 6px) !important;
+}
+
+.dark .brutal-btn-adaptive {
+  background-color: var(--blue) !important;
+  color: #FFFFFF !important;
+  border-color: #000000 !important;
+  box-shadow: 6px 6px 0px #000000 !important;
+}
+
+.dark .brutal-btn-adaptive:hover {
+  background-color: var(--acid) !important;
+  color: #000000 !important;
+  border-color: var(--acid) !important;
+  box-shadow: none !important;
+  transform: translate(6px, 6px) !important;
+}
+
+/* Accordion transition */
+.accordion-content {
+  overflow: hidden;
+  transition: max-height 150ms ease-out, opacity 150ms ease-out;
+}
+
+/* Marquee animation */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 20s linear infinite;
+}
+
+/* Terminal blink */
+@keyframes blink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
+.animate-blink {
+  animation: blink 1s steps(1) infinite;
+}
+
+/* Hero text rotate */
+@keyframes textRotate {
+
+  0%,
+  30% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  33%,
+  63% {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+
+  66%,
+  96% {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Highlight text mechanical selection */
+@keyframes text-selection {
+
+  0%,
+  5% {
+    clip-path: inset(0 100% 0 0);
+  }
+
+  25%,
+  75% {
+    clip-path: inset(0 0 0 0);
+  }
+
+  95%,
+  100% {
+    clip-path: inset(0 0 0 100%);
+  }
+}
+
+.animate-selection {
+  animation: text-selection 4s steps(11) infinite;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+  }
+
+  .animate-blink {
+    animation: none;
+    opacity: 1;
+  }
+
+  .brutal-btn {
+    transition: none;
+  }
+
+  .accordion-content {
+    transition: none;
+  }
+
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Scrollbar brutal */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+  border-left: 3px solid var(--border-color);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border: 2px solid var(--bg);
+}
+
+/* Selection */
+::selection {
+  background: var(--acid);
+  color: var(--border-color);
 }
