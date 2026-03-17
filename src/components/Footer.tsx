@@ -6,7 +6,16 @@ export default function Footer() {
       rodrigo matos - A.I Builder{" "}
       //{" "}
       <Link href="/versoes" className="underline underline-offset-4 hover:text-acid transition-colors">
-        v2.0
+        v2.1
+      </Link>
+      {" "}
+      //{" "}
+      <Link href="/privacidade" className="underline underline-offset-4 hover:text-acid transition-colors">
+        privacidade
+      </Link>
+      {" - "}
+      <Link href="/termos" className="underline underline-offset-4 hover:text-acid transition-colors">
+        termos
       </Link>
     </footer>
   );

@@ -55,7 +55,7 @@ export default function Termos() {
 
           <section className="flex flex-col gap-3">
             <h2 className="font-heading text-xl md:text-2xl font-bold uppercase">6. Contato</h2>
-            <p>Dúvidas sobre estes termos: <strong className="font-bold text-blue dark:text-acid">mrmimico@gmail.com</strong>.</p>
+            <p>Dúvidas sobre estes termos: <strong className="font-bold text-blue dark:text-acid">oi@rodrigo.wtf</strong>.</p>
           </section>
 
           <section className="flex flex-col gap-3">

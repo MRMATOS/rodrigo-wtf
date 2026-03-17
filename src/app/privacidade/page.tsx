@@ -21,7 +21,7 @@ export default function Privacidade() {
 
           <section className="flex flex-col gap-3">
             <h2 className="font-heading text-xl md:text-2xl font-bold uppercase">1. Quem sou eu</h2>
-            <p>Este site é operado por <strong className="font-bold text-blue dark:text-acid">Rodrigo Matos</strong>, desenvolvedor independente. Para contato: <strong className="font-bold text-blue dark:text-acid">mrmimico@gmail.com</strong>.</p>
+            <p>Este site é operado por <strong className="font-bold text-blue dark:text-acid">Rodrigo Matos</strong>, desenvolvedor independente. Para contato: <strong className="font-bold text-blue dark:text-acid">oi@rodrigo.wtf</strong>.</p>
           </section>
 
           <section className="flex flex-col gap-3">
@@ -55,7 +55,7 @@ export default function Privacidade() {
 
           <section className="flex flex-col gap-3">
             <h2 className="font-heading text-xl md:text-2xl font-bold uppercase">6. Seus direitos</h2>
-            <p>Você pode solicitar a exclusão dos seus dados a qualquer momento enviando um e-mail para <strong className="font-bold text-blue dark:text-acid">mrmimico@gmail.com</strong>.</p>
+            <p>Você pode solicitar a exclusão dos seus dados a qualquer momento enviando um e-mail para <strong className="font-bold text-blue dark:text-acid">oi@rodrigo.wtf</strong>.</p>
           </section>
 
           <section className="flex flex-col gap-3">

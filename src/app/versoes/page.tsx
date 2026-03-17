@@ -5,6 +5,18 @@ export const metadata = {
 
 const versoes = [
   {
+    version: "2.1",
+    date: "Mar 2026",
+    changes: [
+      "Página Sobre com bio completa e modo resumido",
+      "Easter egg no botão de tema (modo caos)",
+      "Som no botão de alternância de tema",
+      "Páginas de Política de Privacidade e Termos de Serviço",
+      "Open Graph image estática",
+      "Correções de build e variáveis de ambiente no Vercel",
+    ],
+  },
+  {
     version: "2.0",
     date: "Mar 2026",
     changes: [
