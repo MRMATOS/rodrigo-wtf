@@ -15,6 +15,7 @@ function AccordionItem({ index, title, symbol, children }: AccordionItemProps) {
   return (
     <div className="border-3 border-border brutal-shadow">
       <button
+        id={`accordion-btn-${index}`}
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between px-4 md:px-8 py-5 md:py-6 text-left hover:bg-acid active:bg-acid hover:text-[#000000] active:text-[#000000] focus-visible:outline-3 focus-visible:outline-acid min-h-[44px]"
         style={{
@@ -23,6 +24,7 @@ function AccordionItem({ index, title, symbol, children }: AccordionItemProps) {
           transitionProperty: "background-color, color",
         }}
         aria-expanded={open}
+        aria-controls={`accordion-region-${index}`}
       >
         <div className="flex items-center gap-3 md:gap-5">
           <span className="font-body text-sm md:text-base opacity-70 shrink-0">
@@ -41,12 +43,14 @@ function AccordionItem({ index, title, symbol, children }: AccordionItemProps) {
       </button>
 
       <div
+        id={`accordion-region-${index}`}
         className="accordion-content"
         style={{
           maxHeight: open ? "2000px" : "0px",
           opacity: open ? 1 : 0,
         }}
         role="region"
+        aria-labelledby={`accordion-btn-${index}`}
       >
         <div className="px-4 md:px-8 pb-6 md:pb-8 border-t-3 border-border">
           <div className="pt-6 font-body text-base md:text-lg leading-relaxed max-w-prose">

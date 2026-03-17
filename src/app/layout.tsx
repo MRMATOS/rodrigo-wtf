@@ -17,9 +17,32 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "rodrigo.wtf — Eu faço sites funcionais",
+  metadataBase: new URL("https://rodrigo.wtf"),
+  title: {
+    default: "rodrigo.wtf — Eu faço sites funcionais",
+    template: "%s — rodrigo.wtf",
+  },
   description:
     "Rodrigo Matos. Sites funcionais, ferramentas e consultoria. Sem enrolação.",
+  openGraph: {
+    type: "website",
+    locale: "pt_BR",
+    url: "https://rodrigo.wtf",
+    siteName: "rodrigo.wtf",
+    title: "rodrigo.wtf — Eu faço sites funcionais",
+    description:
+      "Rodrigo Matos. Sites funcionais, ferramentas e consultoria. Sem enrolação.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "rodrigo.wtf — Eu faço sites funcionais",
+    description:
+      "Rodrigo Matos. Sites funcionais, ferramentas e consultoria. Sem enrolação.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
@@ -47,6 +70,12 @@ export default function RootLayout({
       <body
         className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} font-body antialiased bg-background text-foreground`}
       >
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[1000] brutal-btn brutal-btn-adaptive px-4 py-2 font-body text-sm font-bold uppercase"
+        >
+          Ir para o conteúdo
+        </a>
         <Navbar />
         {children}
         <Footer />

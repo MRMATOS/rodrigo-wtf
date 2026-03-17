@@ -1,7 +1,13 @@
+import Link from "next/link";
+
 export default function Footer() {
   return (
     <footer className="border-3 border-border brutal-shadow bg-background text-foreground text-center py-6 px-4 font-body text-sm font-bold uppercase tracking-widest">
-      END OF TRANSMISSION // RODRIGO MATOS // 2026
+      rodrigo matos - A.I Builder{" "}
+      //{" "}
+      <Link href="/versoes" className="underline underline-offset-4 hover:text-acid transition-colors">
+        v2.0
+      </Link>
     </footer>
   );
 }

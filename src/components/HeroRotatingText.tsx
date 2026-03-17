@@ -81,8 +81,9 @@ export default function HeroRotatingText() {
     return () => clearTimeout(timeout);
   }, [charIndex, currentPhrase, isDeleting, phraseIndex, isVisible]);
 
-  // Cursor blink
+  // Cursor blink — skip if user prefers reduced motion
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const interval = setInterval(() => {
       setShowCursor((prev) => !prev);
     }, 530);

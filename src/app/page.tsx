@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import HeroRotatingText from "@/components/HeroRotatingText";
 
 export default function Home() {
@@ -31,7 +32,7 @@ export default function Home() {
     };
   }, []);
   return (
-    <main className="grid grid-cols-4 gap-4 md:gap-8">
+    <main id="main-content" className="grid grid-cols-4 gap-4 md:gap-8">
       {/* ═══════════ HERO ═══════════ */}
       <header className="col-span-4 border-3 border-border brutal-shadow bg-background relative p-8 md:p-12 lg:py-24 lg:px-12">
         {/* Noise overlay */}
@@ -62,16 +63,17 @@ export default function Home() {
 
         <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-8 md:gap-12">
           {/* Image */}
-          <div 
+          <div
             ref={imageRef}
-            className="border-3 border-border bg-foreground min-h-[300px] md:min-h-[400px] overflow-hidden"
+            className="border-3 border-border bg-foreground min-h-[300px] md:min-h-[400px] overflow-hidden relative"
           >
-            <img
+            <Image
               src="/eu.png"
               alt="Foto do Rodrigo"
-              className={`w-full h-full object-cover transition-none md:hover:grayscale-0 md:hover:contrast-[1.1] ${
-                isImageVisible ? "grayscale-0 contrast-[1.1]" : "grayscale contrast-[1.2]"
-              }`}
+              fill
+              sizes="(max-width: 768px) 100vw, 300px"
+              className={`object-cover transition-none md:hover:grayscale-0 md:hover:contrast-[1.1] ${isImageVisible ? "grayscale-0 contrast-[1.1]" : "grayscale contrast-[1.2]"}`}
+              priority
             />
           </div>
 
@@ -116,8 +118,8 @@ export default function Home() {
           </h2>
           <div className="border-3 border-border bg-background text-foreground p-6 md:p-8 font-body text-base md:text-lg leading-relaxed flex flex-col gap-4">
             <p>
-              <span className="text-blue dark:text-acid font-bold">&gt;</span> Você pode ter um site comum que só exibe informação. Eu posso
-              fazer assim, sem problemas.
+              <span className="text-blue dark:text-acid font-bold">&gt;</span> Você quer um site comum que só exibe informação? Eu posso
+              fazer, sem problemas.
             </p>
             <p>
               <span className="text-blue dark:text-acid font-bold">&gt;</span> Mas você pode ter um site com login, opções, facilitadores,
@@ -185,7 +187,7 @@ export default function Home() {
           </p>
           <div className="flex flex-col gap-3 items-start">
             <Link
-              href="https://wa.me/5500000000000?text=Oi%20Rodrigo%2C%20quero%20agendar%20uma%20an%C3%A1lise"
+              href="https://wa.me/5542998703287?text=Oi%20Rodrigo%2C%20quero%20agendar%20uma%20an%C3%A1lise"
               target="_blank"
               rel="noopener noreferrer"
               className="brutal-btn brutal-btn-adaptive px-8 md:px-12 py-4 md:py-5 font-body text-lg md:text-xl font-bold uppercase tracking-wide text-center"
