@@ -40,7 +40,7 @@ export default function Servicos() {
       <article className="col-span-4 border-3 border-border brutal-shadow bg-blue text-[#FFFFFF] p-8 md:p-12">
         <div className="font-body text-base md:text-lg leading-relaxed flex flex-col gap-6 max-w-3xl">
           <p>
-            Basicamente, eu busco encontrar prolemas ou maneiras de melhorar um processo, seja digital ou manual.
+            Basicamente, eu busco prolemas ou maneiras de melhorar um processo, seja digital ou manual.
             Questiono os motivos, penso em alternativas e vou moldando uma <strong>solução aos poucos</strong>.
           </p>
           <p>
@@ -79,9 +79,6 @@ export default function Servicos() {
         </AccordionItem>
 
         <AccordionItem index={2} title="Imersão no Seu Negócio" symbol="///">
-          <p className="text-muted text-sm uppercase tracking-wide mb-4">
-            ( eu vou até você )
-          </p>
           <p>
             O único jeito de te ajudar, é compreender o fluxo de trabalho.
           </p>

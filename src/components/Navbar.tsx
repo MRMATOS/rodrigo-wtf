@@ -103,12 +103,17 @@ export default function Navbar() {
           >
             Ferramentas
           </button>
-          <button
-            className="font-body text-sm font-bold uppercase tracking-wide opacity-50 cursor-not-allowed"
-            disabled
+          <Link
+            href="/conteudo"
+            className={`font-body text-sm font-bold uppercase tracking-wide border-b-3 pb-0.5 ${
+              pathname.startsWith("/conteudo")
+                ? "text-blue border-blue dark:text-acid dark:border-acid"
+                : "border-transparent hover:border-foreground"
+            }`}
+            style={{ transition: "border-color 0s" }}
           >
             Conteúdo
-          </button>
+          </Link>
           <Link
             href="/#about"
             className={`font-body text-sm font-bold uppercase tracking-wide border-b-3 pb-0.5 ${
@@ -164,12 +169,15 @@ export default function Navbar() {
             >
               Ferramentas
             </button>
-            <button
-              className="font-body text-base uppercase tracking-wide py-3 border-b-3 border-border text-left opacity-50 cursor-not-allowed"
-              disabled
+            <Link
+              href="/conteudo"
+              onClick={() => setMenuOpen(false)}
+              className={`font-body text-base uppercase tracking-wide py-3 border-b-3 border-border ${
+                pathname.startsWith("/conteudo") ? "text-blue dark:text-acid" : ""
+              }`}
             >
               Conteúdo
-            </button>
+            </Link>
             <Link
               href="#about"
               onClick={() => setMenuOpen(false)}

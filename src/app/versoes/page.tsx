@@ -13,6 +13,12 @@ const versoes = [
       "Tema claro/escuro",
       "Efeito de highlight animado na hero",
       "Navegação mobile com menu hambúrguer",
+      "SEO, Open Graph e melhorias de acessibilidade",
+      "Sistema de conteúdo/blog com Supabase",
+      "Admin panel com autenticação Google",
+      "Editor de posts em Markdown com upload de imagens",
+      "Layout adaptativo de imagem de capa por proporção",
+      "Filtros de tags por categoria com colapso mobile",
     ],
   },
   {
@@ -41,7 +47,7 @@ export default function Versoes() {
         {versoes.map((v) => (
           <div key={v.version} className="flex flex-col gap-4">
             <div className="flex items-baseline gap-4">
-              <span className="font-heading text-4xl md:text-5xl font-bold text-acid">
+              <span className="font-heading text-4xl md:text-5xl font-bold text-blue dark:text-acid">
                 v{v.version}
               </span>
               <span className="font-body text-sm font-bold uppercase tracking-widest text-muted">

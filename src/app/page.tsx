@@ -140,17 +140,15 @@ export default function Home() {
           </Link>
         </div>
 
-        {/* Video placeholder */}
-        <div
-          className="border-3 border-border min-h-[300px] md:min-h-[400px] flex items-center justify-center font-heading text-xl font-bold text-center p-8"
-          style={{
-            backgroundImage:
-              "repeating-linear-gradient(45deg, #000 0, #000 10px, #fff 10px, #fff 20px)",
-          }}
-        >
-          <span className="bg-background px-4 py-2 border-3 border-border">
-            [ VISUAL / VIDEO ]
-          </span>
+        {/* Screenshot example */}
+        <div className="border-3 border-border min-h-[300px] md:min-h-[400px] overflow-hidden relative">
+          <Image
+            src="/image_home2.jpg"
+            alt="Exemplo de sistema funcional — Arbalest Digital"
+            fill
+            sizes="(max-width: 768px) 100vw, 400px"
+            className="object-cover object-top"
+          />
         </div>
       </article>
 
