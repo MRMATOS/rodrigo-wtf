@@ -1,9 +1,11 @@
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+function getClient() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+}
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -33,7 +35,7 @@ export interface Comment {
 // ─── Queries ──────────────────────────────────────────────────────────────────
 
 export async function getLatestPosts(category: Category, limit = 5): Promise<Post[]> {
-  const { data, error } = await supabase
+  const { data, error } = await getClient()
     .from("posts")
     .select("id, title, slug, category, tags, published_at")
     .eq("category", category)
@@ -46,7 +48,7 @@ export async function getLatestPosts(category: Category, limit = 5): Promise<Pos
 }
 
 export async function getPostsByCategory(category: Category): Promise<Post[]> {
-  const { data, error } = await supabase
+  const { data, error } = await getClient()
     .from("posts")
     .select("id, title, slug, category, tags, published_at")
     .eq("category", category)
@@ -58,7 +60,7 @@ export async function getPostsByCategory(category: Category): Promise<Post[]> {
 }
 
 export async function getPostBySlug(category: Category, slug: string): Promise<Post | null> {
-  const { data, error } = await supabase
+  const { data, error } = await getClient()
     .from("posts")
     .select("*")
     .eq("category", category)
@@ -71,7 +73,7 @@ export async function getPostBySlug(category: Category, slug: string): Promise<P
 }
 
 export async function getCommentsByPost(postId: string): Promise<Comment[]> {
-  const { data, error } = await supabase
+  const { data, error } = await getClient()
     .from("comments")
     .select("*")
     .eq("post_id", postId)
