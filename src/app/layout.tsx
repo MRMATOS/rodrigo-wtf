@@ -32,14 +32,14 @@ export const metadata: Metadata = {
     title: "rodrigo.wtf — Eu faço sites funcionais",
     description:
       "Rodrigo Matos. Sites funcionais, ferramentas e consultoria. Sem enrolação.",
-    images: [{ url: "/opengraph-image.jpg", width: 1200, height: 630 }],
+    images: [{ url: "/opengraphimage.jpg", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
     title: "rodrigo.wtf — Eu faço sites funcionais",
     description:
       "Rodrigo Matos. Sites funcionais, ferramentas e consultoria. Sem enrolação.",
-    images: ["/opengraph-image.jpg"],
+    images: ["/opengraphimage.jpg"],
   },
   robots: {
     index: true,
