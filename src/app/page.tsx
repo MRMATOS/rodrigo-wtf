@@ -45,12 +45,75 @@ export default function Home() {
             backgroundSize: "200px 200px",
           }}
         />
-        <h1 className="font-heading text-[clamp(3rem,5vw,10rem)] font-bold uppercase leading-[1.1] tracking-tight relative z-[1]">
+        <h1 className="font-heading text-[clamp(3rem,6vw,12rem)] font-bold uppercase leading-[1.1] tracking-tight relative z-[1]">
           Sim, eu faço<span className="hidden md:inline"> </span>
           <br className="md:hidden" />
           <HeroRotatingText />
         </h1>
       </header>
+
+      {/* ═══════════ QUAL É O PROBLEMA? ═══════════ */}
+      <article className="col-span-4 border-3 border-border brutal-shadow bg-blue text-[#FFFFFF] p-8 md:p-12 flex flex-col gap-8">
+        <h2 className="font-heading text-[clamp(2rem,4vw,4rem)] font-bold uppercase leading-tight max-w-3xl">
+          Processo lento, site sem função e nem usa IA?
+        </h2>
+        <p className="font-heading text-[clamp(2rem,4vw,4rem)] font-bold uppercase leading-tight max-w-3xl">
+          Eu sei como é.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 font-body text-base md:text-lg leading-relaxed">
+          {[
+            {
+              text: "Já vi supermercado anotar datas de validade em caderno, e resolvi criando um aplicativo que diminuiu perdas e economizou tempo.",
+            },
+            {
+              text: "E o que acha de um site que busca, traduz e publica notícias automaticamente? Eu criei, e ajudou uma equipe a focar em conteúdos mais elaborados.",
+            },
+            {
+              text: "Imagine um aplicativo que te ajuda a fugir dos lugares mais barulhentos da cidade. Não precisa imaginar,",
+              link: { label: "já existe.", href: "/ferramentas" },
+            },
+            {
+              text: "É 2026 e estão imprimindo listas para cotação de produtos? Eu não aceito isso. Desenvolvi um sistema que processa as listas, organiza e auxilia na criação do pedido de compra.",
+            },
+          ].map(({ text, link }, i) => (
+            <div key={i} className="flex gap-4 items-start">
+              <span className="font-heading font-bold text-acid shrink-0 text-xl mt-0.5">[{i + 1}]</span>
+              <p>
+                {text}{" "}
+                {link && (
+                  <Link href={link.href} className="underline underline-offset-4 hover:text-acid font-bold">
+                    {link.label}
+                  </Link>
+                )}
+              </p>
+            </div>
+          ))}
+        </div>
+      </article>
+
+      {/* ═══════════ CASO REAL ═══════════ */}
+      <article className="col-span-4 border-3 border-border brutal-shadow bg-background p-8 md:p-12 flex flex-col gap-8">
+        <p className="font-body text-sm font-bold uppercase tracking-widest text-muted">
+          // Caso real
+        </p>
+        <h2 className="font-heading text-[clamp(2rem,4vw,5rem)] font-bold uppercase leading-tight max-w-4xl">
+          Um designer com IA resolveu o que 10 programadores ignoraram.
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-body text-base md:text-lg leading-relaxed max-w-5xl">
+          <p>
+            Um supermercado com equipe de TI dedicada, mas setores inteiros operando com caderno e caneta. Controle de validade, pedidos do açougue, farmácia, tudo manual, tudo lento.
+          </p>
+          <p>
+            Eu observei, construí e entreguei. Sozinho. Os repositores escaneavam código de barras no celular, o gerente via os dados em tempo real. O açougue ganhou um painel de produção. A farmácia, inteligência de uso.
+          </p>
+          <p>
+            Dois meses depois de ser demitido por ter feito demais, a empresa tentou replicar a solução. Não conseguiu. A farmácia ligou pedindo acesso de volta.
+          </p>
+        </div>
+        <blockquote className="font-heading text-xl md:text-2xl font-bold uppercase border-l-3 border-blue dark:border-acid pl-5 text-foreground max-w-2xl">
+          "Não construí do jeito que eu gostava. Construí do jeito que resolvia."
+        </blockquote>
+      </article>
 
       {/* ═══════════ EU QUEM? ═══════════ */}
       <article
@@ -93,64 +156,22 @@ export default function Home() {
             </div>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
-                href="#about"
+                href="/sobre"
                 className="brutal-btn brutal-btn-adaptive px-6 py-3 font-body text-sm font-bold uppercase tracking-wide text-center"
               >
                 Veja mais sobre mim
               </Link>
-              <button
-                className="brutal-btn bg-background px-6 py-3 font-body text-sm font-bold uppercase tracking-wide text-center opacity-50 cursor-not-allowed"
-                disabled
+              <Link
+                href="/ferramentas"
+                className="brutal-btn brutal-btn-adaptive px-6 py-3 font-body text-sm font-bold uppercase tracking-wide text-center"
               >
                 Veja as ferramentas
-              </button>
+              </Link>
             </div>
           </div>
         </div>
       </article>
 
-      {/* ═══════════ SITE FUNCIONAL? ═══════════ */}
-      <article className="col-span-4 border-3 border-border brutal-shadow bg-background p-6 md:p-12 grid grid-cols-1 md:grid-cols-[1fr_400px] gap-8 md:gap-12">
-        {/* Text */}
-        <div className="flex flex-col justify-center gap-6">
-          <h2 className="font-heading text-[clamp(2.5rem,5vw,4rem)] font-bold uppercase leading-none">
-            Site funcional?
-          </h2>
-          <div className="border-3 border-border bg-background text-foreground p-6 md:p-8 font-body text-base md:text-lg leading-relaxed flex flex-col gap-4">
-            <p>
-              <span className="text-blue dark:text-acid font-bold">&gt;</span> Você quer um site comum que só exibe informação? Eu posso
-              fazer, sem problemas.
-            </p>
-            <p>
-              <span className="text-blue dark:text-acid font-bold">&gt;</span> Mas você pode ter um site com login, opções, facilitadores,
-              ferramentas que te ajudam de alguma forma no seu trabalho ou na sua
-              comunicação com o cliente.
-            </p>
-            <p>
-              <span className="text-blue dark:text-acid font-bold">&gt;</span> Desde a venda de produtos, como uso interno para sua
-              mecânica, mercado, clínica ou outro serviço.
-            </p>
-            <p><span className="text-blue dark:text-acid font-bold">&gt;</span> Vou te explicar os detalhes, sem pressa.</p>
-          </div>
-          <Link
-            href="/servicos"
-            className="brutal-btn brutal-btn-adaptive px-6 py-3 font-body text-sm font-bold uppercase tracking-wide text-center self-start"
-          >
-            Veja mais sobre sites
-          </Link>
-        </div>
-
-        {/* Screenshot example */}
-        <div className="border-3 border-border min-h-[300px] md:min-h-[400px] overflow-hidden relative">
-          <Image
-            src="/image_home2.jpg"
-            alt="Exemplo de sistema funcional — Arbalest Digital"
-            fill
-            sizes="(max-width: 768px) 100vw, 400px"
-            className="object-cover object-top"
-          />
-        </div>
-      </article>
 
       {/* ═══════════ TERMINAL — CONSULTORIA ═══════════ */}
       <Link
@@ -185,7 +206,7 @@ export default function Home() {
           </p>
           <div className="flex flex-col gap-3 items-start">
             <Link
-              href="https://wa.me/5542998703287?text=Oi%20Rodrigo%2C%20quero%20agendar%20uma%20an%C3%A1lise"
+              href="https://wa.me/5542998703287"
               target="_blank"
               rel="noopener noreferrer"
               className="brutal-btn brutal-btn-adaptive px-8 md:px-12 py-4 md:py-5 font-body text-lg md:text-xl font-bold uppercase tracking-wide text-center"

@@ -105,7 +105,7 @@ export default function Navbar() {
   );
 
   return (
-    <div className="sticky top-4 z-50 relative" ref={menuRef}>
+    <div className="sticky top-4 z-[100] relative" ref={menuRef}>
       <nav className="border-3 border-border bg-background brutal-shadow flex justify-between items-center px-4 md:px-8 py-3 md:py-4 relative">
         {/* Logo */}
         <Link
@@ -149,12 +149,17 @@ export default function Navbar() {
           >
             Serviços
           </Link>
-          <button
-            className="font-body text-sm font-bold uppercase tracking-wide opacity-50 cursor-not-allowed"
-            disabled
+          <Link
+            href="/ferramentas"
+            className={`font-body text-sm font-bold uppercase tracking-wide border-b-3 pb-0.5 ${
+              pathname.startsWith("/ferramentas")
+                ? "text-blue border-blue dark:text-acid dark:border-acid"
+                : "border-transparent hover:border-foreground"
+            }`}
+            style={{ transition: "border-color 0s" }}
           >
             Ferramentas
-          </button>
+          </Link>
           <Link
             href="/conteudo"
             className={`font-body text-sm font-bold uppercase tracking-wide border-b-3 pb-0.5 ${
@@ -222,12 +227,15 @@ export default function Navbar() {
             >
               Serviços
             </Link>
-            <button
-              className="font-body text-base uppercase tracking-wide py-3 border-b-3 border-border text-left opacity-50 cursor-not-allowed"
-              disabled
+            <Link
+              href="/ferramentas"
+              onClick={() => setMenuOpen(false)}
+              className={`font-body text-base uppercase tracking-wide py-3 border-b-3 border-border ${
+                pathname.startsWith("/ferramentas") ? "text-blue dark:text-acid" : ""
+              }`}
             >
               Ferramentas
-            </button>
+            </Link>
             <Link
               href="/conteudo"
               onClick={() => setMenuOpen(false)}

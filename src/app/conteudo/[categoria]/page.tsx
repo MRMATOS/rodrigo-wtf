@@ -4,6 +4,7 @@ import { getPostsByCategory, type Category, type Post } from "@/lib/supabase";
 import TagFilters from "@/components/TagFilters";
 
 const CATEGORY_LABELS: Record<Category, { title: string; back: string }> = {
+  "sites-e-aplicativos": { title: "Sites e Aplicativos", back: "todos" },
   analises: { title: "Críticas e Análises", back: "todas" },
   projetos: { title: "Ideias e Projetos", back: "todos" },
 };

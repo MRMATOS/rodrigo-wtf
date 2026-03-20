@@ -158,6 +158,79 @@ body {
   transform: translate(6px, 6px) !important;
 }
 
+/* Mapa do Sossego — botões fixos (iguais em light e dark) */
+.map-btn-fixed {
+  border: 2px solid #000000 !important;
+  box-shadow: 4px 4px 0px #000000 !important;
+}
+.dark .map-btn-fixed {
+  border: 2px solid #000000 !important;
+  box-shadow: 4px 4px 0px #000000 !important;
+}
+.map-stats-btn {
+  background-color: #F4F4F0 !important;
+  color: #000000 !important;
+}
+.dark .map-stats-btn {
+  background-color: #F4F4F0 !important;
+  color: #000000 !important;
+}
+
+/* Mapa do Sossego — filtros */
+.map-chip {
+  border: 2px solid #000000;
+  box-shadow: 4px 4px 0px #000000;
+  background-color: var(--bg);
+  color: #000000;
+}
+.map-chip-active {
+  border: 2px solid #000000;
+  box-shadow: 4px 4px 0px #000000;
+  background-color: var(--acid);
+  color: #000000;
+  font-weight: 700;
+}
+.dark .map-chip {
+  background-color: var(--blue);
+  color: #ffffff;
+  border-color: #000000;
+  box-shadow: 4px 4px 0px #000000;
+}
+.dark .map-chip-active {
+  background-color: var(--acid);
+  color: #000000;
+  border-color: #000000;
+  box-shadow: 4px 4px 0px #000000;
+}
+
+/* Mapbox popup — estilo brutalista */
+.mapboxgl-popup-content {
+  background: #F4F4F0 !important;
+  color: #000000 !important;
+  border: 2px solid #000000 !important;
+  box-shadow: 4px 4px 0px #000000 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  font-family: var(--font-jetbrains-mono), monospace !important;
+}
+.mapboxgl-popup-tip {
+  display: none !important;
+}
+.mapboxgl-popup-close-button {
+  color: #000000 !important;
+  font-size: 16px !important;
+  padding: 4px 8px !important;
+  line-height: 1 !important;
+  background: transparent !important;
+  border: none !important;
+  top: 2px !important;
+  right: 2px !important;
+}
+.mapboxgl-popup-close-button:hover {
+  background: #000000 !important;
+  color: #F4F4F0 !important;
+}
+
 /* Accordion transition */
 .accordion-content {
   overflow: hidden;

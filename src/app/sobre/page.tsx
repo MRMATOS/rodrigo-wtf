@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 const FULL_CONTENT = [
   {
@@ -64,12 +65,12 @@ export default function Sobre() {
 
       {/* Hero */}
       <header className="col-span-4 border-3 border-border brutal-shadow bg-background p-8 md:p-12 lg:py-24 lg:px-12">
-        <p className="font-body text-sm font-bold uppercase tracking-widest text-muted mb-3">
-          // sobre
-        </p>
-        <h1 className="font-heading text-[clamp(3rem,5vw,10rem)] font-bold uppercase leading-[1.1] tracking-tight">
+        <h1 className="font-heading text-[clamp(3rem,6vw,12rem)] font-bold uppercase leading-[1.1] tracking-tight">
           WTF, Rodrigo?
         </h1>
+        <p className="font-body text-base md:text-lg text-muted mt-4 relative z-[1] max-w-xl">
+          // Tempo
+        </p>
       </header>
 
       {/* Photo — mobile: full width; desktop: sidebar */}
@@ -85,6 +86,7 @@ export default function Sobre() {
         </div>
         <div className="border-t-3 border-border p-4 flex flex-col gap-1">
           {[
+            { label: "whatsapp", href: "https://wa.me/5542998703287" },
             { label: "linkedin", href: "https://www.linkedin.com/in/rodrigomatosco/" },
             { label: "facebook", href: "https://www.facebook.com/rodrigomatos.wtf" },
             { label: "instagram", href: "https://instagram.com/rodrigomatos.wtf" },
@@ -147,6 +149,33 @@ export default function Sobre() {
 
         <ToggleButton summarized={summarized} onToggle={() => setSummarized((s) => !s)} />
 
+      </article>
+
+      {/* CTA Final */}
+      <article className="col-span-4 border-3 border-border brutal-shadow bg-background p-8 md:p-12">
+        <h2 className="font-heading text-[clamp(2rem,5vw,4rem)] font-bold uppercase leading-tight mb-6 text-foreground">
+          Vamos descobrir o que você realmente precisa?
+        </h2>
+        <div className="flex flex-col gap-6">
+          <p className="font-body text-lg md:text-xl font-medium max-w-3xl text-foreground">
+            Não tem essa de &ldquo;valor inbox&rdquo;. O projeto custa o que for
+            necessário para resolver o seu problema específico. Vamos marcar uma
+            conversa e analisar o seu cenário.
+          </p>
+          <div className="flex flex-col gap-3 items-start">
+            <Link
+              href="https://wa.me/5542998703287"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="brutal-btn brutal-btn-adaptive px-8 md:px-12 py-4 md:py-5 font-body text-lg md:text-xl font-bold uppercase tracking-wide text-center"
+            >
+              Quero agendar uma análise do meu negócio
+            </Link>
+            <span className="font-body text-sm font-bold text-foreground opacity-70">
+              // isso vai abrir o WhatsApp, mas só coloquei um texto tipo profissional
+            </span>
+          </div>
+        </div>
       </article>
 
     </main>

@@ -62,7 +62,7 @@ function SectionBlock({
           href={href}
           className="brutal-btn brutal-btn-adaptive px-3 py-1.5 font-body text-xs font-bold uppercase tracking-wide"
         >
-          [+] Ver {category === "analises" ? "todas" : "todos"}
+          [+] Ver tudo
         </Link>
       </div>
 
@@ -87,7 +87,8 @@ export const metadata = {
 };
 
 export default async function Conteudo() {
-  const [analises, projetos] = await Promise.all([
+  const [sites, analises, projetos] = await Promise.all([
+    getLatestPosts("sites-e-aplicativos", 5).catch(() => [] as Post[]),
     getLatestPosts("analises", 5).catch(() => [] as Post[]),
     getLatestPosts("projetos", 5).catch(() => [] as Post[]),
   ]);
@@ -95,14 +96,22 @@ export default async function Conteudo() {
   return (
     <main id="main-content" className="grid grid-cols-4 gap-4 md:gap-8">
       {/* Hero */}
-      <header className="col-span-4 border-3 border-border brutal-shadow bg-background p-8 md:p-12">
-        <h1 className="font-heading text-[clamp(2.5rem,5vw,5rem)] font-bold uppercase leading-none">
+      <header className="col-span-4 border-3 border-border brutal-shadow bg-background p-8 md:p-12 lg:py-24 lg:px-12">
+        <h1 className="font-heading text-[clamp(3rem,6vw,12rem)] font-bold uppercase leading-[1.1] tracking-tight relative z-[1]">
           Conteúdo
         </h1>
-        <p className="font-body text-base md:text-lg opacity-70 mt-4 max-w-2xl">
-          O que eu estou fazendo, testando e pensando. Sem filtro.
+        <p className="font-body text-base md:text-lg text-muted mt-4 relative z-[1] max-w-xl">
+          // O que eu estou fazendo, testando e pensando. Sem filtro.
         </p>
       </header>
+
+      {/* Sites e Aplicativos */}
+      <SectionBlock
+        title="Sites e Aplicativos"
+        category="sites-e-aplicativos"
+        href="/conteudo/sites-e-aplicativos"
+        posts={sites}
+      />
 
       {/* Análises */}
       <SectionBlock

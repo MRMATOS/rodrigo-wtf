@@ -18,6 +18,11 @@ export default async function AdminLayout({
     return <>{children}</>;
   }
 
+  // Only allow the authorized admin email
+  if (user.email !== process.env.ADMIN_EMAIL) {
+    redirect("/admin/login?error=unauthorized");
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Admin top bar */}

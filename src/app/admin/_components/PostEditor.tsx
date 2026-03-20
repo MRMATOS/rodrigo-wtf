@@ -24,8 +24,8 @@ interface PostEditorProps {
 export default function PostEditor({ post }: PostEditorProps) {
   const [title, setTitle] = useState(post?.title ?? "");
   const [slug, setSlug] = useState(post?.slug ?? "");
-  const [category, setCategory] = useState<"analises" | "projetos">(
-    (post?.category as "analises" | "projetos") ?? "analises"
+  const [category, setCategory] = useState<"sites-e-aplicativos" | "analises" | "projetos">(
+    (post?.category as "sites-e-aplicativos" | "analises" | "projetos") ?? "analises"
   );
   const [tags, setTags] = useState(post?.tags?.join(", ") ?? "");
   const [content, setContent] = useState(post?.content ?? "");
@@ -133,10 +133,11 @@ export default function PostEditor({ post }: PostEditorProps) {
           <select
             value={category}
             onChange={(e) =>
-              setCategory(e.target.value as "analises" | "projetos")
+              setCategory(e.target.value as "sites-e-aplicativos" | "analises" | "projetos")
             }
             className="border-3 border-border bg-background text-foreground font-body text-sm px-4 py-3 w-full focus:outline-none focus:border-acid"
           >
+            <option value="sites-e-aplicativos">Sites e Aplicativos</option>
             <option value="analises">Críticas e Análises</option>
             <option value="projetos">Ideias e Projetos</option>
           </select>

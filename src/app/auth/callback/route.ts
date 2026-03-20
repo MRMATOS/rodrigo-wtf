@@ -26,10 +26,13 @@ export async function GET(request: NextRequest) {
       }
     );
 
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) {
+    const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+    if (!error && data.user?.email === process.env.ADMIN_EMAIL) {
       return NextResponse.redirect(`${origin}/admin`);
     }
+    // Wrong account — sign out and reject
+    await supabase.auth.signOut();
+    return NextResponse.redirect(`${origin}/admin/login?error=unauthorized`);
   }
 
   return NextResponse.redirect(`${origin}/admin/login?error=auth`);

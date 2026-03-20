@@ -9,7 +9,7 @@ function getClient() {
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-export type Category = "analises" | "projetos";
+export type Category = "sites-e-aplicativos" | "analises" | "projetos";
 
 export interface Post {
   id: string;

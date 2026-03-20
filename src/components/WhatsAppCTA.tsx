@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 const WHATSAPP_URL =
-  "https://wa.me/5542998703287?text=Oi%20Rodrigo%2C%20vim%20pelo%20site";
+  "https://wa.me/5542998703287";
 
 export default function WhatsAppCTA() {
   return (

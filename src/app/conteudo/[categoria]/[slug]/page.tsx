@@ -2,6 +2,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
+import rehypeHighlight from "rehype-highlight";
+import "highlight.js/styles/github-dark.css";
 import { getPostBySlug, getCommentsByPost, type Category } from "@/lib/supabase";
 import CoverImageLayout from "./CoverImageLayout";
 
@@ -9,6 +12,7 @@ function MarkdownContent({ content }: { content: string }) {
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
+      rehypePlugins={[rehypeRaw, rehypeHighlight]}
       components={{
         h2: ({ children }) => (
           <h2 className="font-heading text-2xl md:text-3xl font-bold uppercase mt-10 mb-4">
@@ -32,10 +36,25 @@ function MarkdownContent({ content }: { content: string }) {
         strong: ({ children }) => (
           <strong className="font-bold text-blue dark:text-acid">{children}</strong>
         ),
-        code: ({ children }) => (
-          <code className="bg-foreground text-background px-1.5 py-0.5 text-sm font-body">
+        code: ({ className, children, ...props }) => {
+          const isBlock = className?.startsWith("language-");
+          if (isBlock) {
+            return (
+              <code className={`${className} block text-sm font-body rounded-none`} {...props}>
+                {children}
+              </code>
+            );
+          }
+          return (
+            <code className="bg-foreground text-background px-1.5 py-0.5 text-sm font-body" {...props}>
+              {children}
+            </code>
+          );
+        },
+        pre: ({ children }) => (
+          <pre className="border-3 border-border bg-[#0d1117] p-4 md:p-6 overflow-x-auto my-4 text-sm">
             {children}
-          </code>
+          </pre>
         ),
         blockquote: ({ children }) => (
           <blockquote className="border-l-3 border-blue dark:border-acid pl-4 opacity-80 my-4">
@@ -43,8 +62,15 @@ function MarkdownContent({ content }: { content: string }) {
           </blockquote>
         ),
         hr: () => <hr className="border-t-3 border-border my-8" />,
-        img: ({ src, alt }) => (
-          <img src={src} alt={alt ?? ""} className="w-full border-3 border-border my-4" />
+        img: ({ src, alt, width, height }) => (
+          <img
+            src={src}
+            alt={alt ?? ""}
+            width={width}
+            height={height}
+            className="border-3 border-border my-4"
+            style={{ width: width ? undefined : "100%" }}
+          />
         ),
       }}
     >
@@ -54,6 +80,7 @@ function MarkdownContent({ content }: { content: string }) {
 }
 
 const CATEGORY_LABELS: Record<Category, string> = {
+  "sites-e-aplicativos": "Sites e Aplicativos",
   analises: "Críticas e Análises",
   projetos: "Ideias e Projetos",
 };

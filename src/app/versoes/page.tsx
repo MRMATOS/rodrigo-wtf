@@ -5,6 +5,22 @@ export const metadata = {
 
 const versoes = [
   {
+    version: "2.2",
+    date: "Mar 2026",
+    changes: [
+      "Mapa do Sossego: modo trajeto com gravação GPS e snap-to-road",
+      "Mapa do Sossego: autenticação Google para gravação de trajetos",
+      "Mapa do Sossego: mapa de calor com duas camadas independentes (barulhento/sossegado)",
+      "Mapa do Sossego: status atualizado para Beta Aberto",
+      "Padronização das heroes de todas as páginas internas",
+      "Página Conteúdo: hero aumentada e tagline adicionada",
+      "Segurança: middleware protegendo rotas /admin com verificação de email",
+      "Segurança: headers CSP e HSTS adicionados",
+      "Segurança: token do Mapbox restrito ao domínio",
+      "Links do WhatsApp sem mensagem pré-preenchida",
+    ],
+  },
+  {
     version: "2.1",
     date: "Mar 2026",
     changes: [
