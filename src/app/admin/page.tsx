@@ -1,6 +1,9 @@
+export const dynamic = "force-dynamic";
+
 import Link from "next/link";
 import { createSupabaseAdmin } from "@/lib/supabase-server";
 import DeleteButton from "./_components/DeleteButton";
+import SendNewsletterButton from "./_components/SendNewsletterButton";
 import type { Post } from "@/lib/supabase";
 
 function formatDate(iso: string) {
@@ -109,6 +112,9 @@ export default async function AdminPage() {
                 >
                   Editar
                 </Link>
+                {post.published_at && (
+                  <SendNewsletterButton postId={post.id} />
+                )}
                 <DeleteButton id={post.id} title={post.title} />
               </div>
             </div>

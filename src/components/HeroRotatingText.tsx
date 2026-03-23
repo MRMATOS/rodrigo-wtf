@@ -1,16 +1,15 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-
-const phrases = [
-  "que facilitam o trabalho",
-  "e aplicativos inteligentes",
-  "porque quero dinheiro",
-];
+import { useT } from "@/contexts/LanguageContext";
 
 const LAST_PHRASE_INDEX = 2;
 
 export default function HeroRotatingText() {
+  const { t } = useT();
+  const phrases = t.home.heroRotating.phrases as readonly string[];
+  const prefix = t.home.heroRotating.prefix;
+
   const [displayText, setDisplayText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [phraseIndex, setPhraseIndex] = useState(0);
@@ -37,6 +36,16 @@ export default function HeroRotatingText() {
     observer.observe(heroEl);
     return () => observer.disconnect();
   }, []);
+
+  // Reset when language changes
+  useEffect(() => {
+    setDisplayText("");
+    setIsDeleting(false);
+    setPhraseIndex(0);
+    setCharIndex(0);
+    waitingRef.current = false;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [t]);
 
   useEffect(() => {
     // Not visible — freeze everything immediately
@@ -79,7 +88,7 @@ export default function HeroRotatingText() {
     );
 
     return () => clearTimeout(timeout);
-  }, [charIndex, currentPhrase, isDeleting, phraseIndex, isVisible]);
+  }, [charIndex, currentPhrase, isDeleting, phraseIndex, isVisible, phrases]);
 
   // Cursor blink — skip if user prefers reduced motion
   useEffect(() => {
@@ -92,7 +101,7 @@ export default function HeroRotatingText() {
 
   return (
     <span ref={spanRef} className="inline leading-normal">
-      sites{" "}
+      {prefix}{" "}
       {displayText && (
         <span className="bg-acid text-[#000000] px-2 md:px-4 inline">{displayText}</span>
       )}

@@ -11,6 +11,7 @@ import ReportButton   from "./ReportButton";
 import FilterBar      from "./FilterBar";
 import StatsPanel     from "./StatsPanel";
 import TrajetoPanel   from "./TrajetoPanel";
+import { useT } from "@/contexts/LanguageContext";
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
 
@@ -23,6 +24,7 @@ type MapMode   = "calor" | "trajeto";
 export default function MapClient() {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef       = useRef<mapboxgl.Map | null>(null);
+  const { t } = useT();
 
   const [mapLoaded, setMapLoaded] = useState(false);
   const [segments,  setSegments]  = useState<NoiseSegmentFeature[]>([]);
@@ -52,21 +54,36 @@ export default function MapClient() {
     map.addControl(new mapboxgl.AttributionControl({ compact: true }), "bottom-right");
     map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), "bottom-right");
 
-    map.on("load", () => setMapLoaded(true));
-    mapRef.current = map;
+    const geolocate = new mapboxgl.GeolocateControl({
+      positionOptions: { enableHighAccuracy: true },
+      trackUserLocation: true,
+      showUserHeading: true,
+      showAccuracyCircle: false,
+    });
+    map.addControl(geolocate, "bottom-right");
 
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        map.flyTo({ center: [pos.coords.longitude, pos.coords.latitude], zoom: INITIAL_ZOOM, speed: 1.5 });
-      },
-      () => {},
-      { enableHighAccuracy: true, timeout: 10000 }
-    );
+    map.on("load", () => {
+      setMapLoaded(true);
+      geolocate.trigger(); // ativa automaticamente ao carregar
+    });
+    mapRef.current = map;
 
     return () => { map.remove(); mapRef.current = null; };
   }, []);
 
   useEffect(() => { reloadData(); }, [reloadData]);
+
+  const heatLegend = [
+    { color: "#7f1d1d", label: t.map.legend.veryNoisy },
+    { color: "#ef4444", label: t.map.legend.noisy },
+    { color: "#eab308", label: t.map.legend.moderate },
+    { color: "#22c55e", label: t.map.legend.quiet },
+  ];
+
+  const lineLegend = [
+    { color: "#ef4444", label: t.map.legend.noisy },
+    { color: "#22c55e", label: t.map.legend.quiet },
+  ];
 
   return (
     <div className="relative w-full h-full">
@@ -133,7 +150,7 @@ export default function MapClient() {
                     );
                   }}
                   className="w-14 h-10 font-body text-base transition-all active:scale-95 flex items-center justify-center map-btn-fixed map-stats-btn border-2"
-                  aria-label="Minha localização"
+                  aria-label={t.map.myLocation}
                 >
                   📍
                 </button>
@@ -153,12 +170,7 @@ export default function MapClient() {
       <div className="absolute bottom-12 left-4 flex flex-col gap-1 pointer-events-none">
         {mode === "calor" ? (
           <>
-            {[
-              { color: "#7f1d1d", label: "Muito barulhento" },
-              { color: "#ef4444", label: "Barulhento" },
-              { color: "#eab308", label: "Moderado" },
-              { color: "#22c55e", label: "Sossegado" },
-            ].map(({ color, label }) => (
+            {heatLegend.map(({ color, label }) => (
               <div key={label} className="flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full" style={{ backgroundColor: color }} />
                 <span className="font-body text-xs text-white opacity-80 uppercase tracking-wide">{label}</span>
@@ -167,17 +179,14 @@ export default function MapClient() {
           </>
         ) : (
           <>
-            {[
-              { color: "#ef4444", label: "Barulhento" },
-              { color: "#22c55e", label: "Sossegado" },
-            ].map(({ color, label }) => (
+            {lineLegend.map(({ color, label }) => (
               <div key={label} className="flex items-center gap-2">
                 <span className="w-4 h-1.5 rounded-full" style={{ backgroundColor: color }} />
                 <span className="font-body text-xs text-white opacity-80 uppercase tracking-wide">{label}</span>
               </div>
             ))}
             <div className="flex items-center gap-2 mt-1">
-              <span className="font-body text-xs text-white opacity-50 uppercase tracking-wide">Clique na linha para detalhes</span>
+              <span className="font-body text-xs text-white opacity-50 uppercase tracking-wide">{t.map.legend.clickLine}</span>
             </div>
           </>
         )}

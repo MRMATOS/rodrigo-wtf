@@ -4,10 +4,12 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import HeroRotatingText from "@/components/HeroRotatingText";
+import { useT } from "@/contexts/LanguageContext";
 
 export default function Home() {
   const [isImageVisible, setIsImageVisible] = useState(false);
   const imageRef = useRef<HTMLDivElement>(null);
+  const { t } = useT();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -17,7 +19,7 @@ export default function Home() {
       {
         root: null,
         rootMargin: "0px",
-        threshold: 0.5, // Trigger when 50% of the image is visible
+        threshold: 0.5,
       }
     );
 
@@ -31,6 +33,14 @@ export default function Home() {
       }
     };
   }, []);
+
+  const exampleLinks = [
+    undefined,
+    { label: "tibia.today", href: "https://tibia.today", external: true },
+    { label: t.home.examples[2].linkLabel!, href: "/ferramentas" },
+    { label: t.home.examples[3].linkLabel!, href: "/conteudo/sites-e-aplicativos/meu-primeiro-app-funcional" },
+  ];
+
   return (
     <main id="main-content" className="grid grid-cols-4 gap-4 md:gap-8">
       {/* ═══════════ HERO ═══════════ */}
@@ -46,46 +56,40 @@ export default function Home() {
           }}
         />
         <h1 className="font-heading text-[clamp(3rem,6vw,12rem)] font-bold uppercase leading-[1.1] tracking-tight relative z-[1]">
-          Sim, eu faço<span className="hidden md:inline"> </span>
+          {t.home.heroMain}<span className="hidden md:inline"> </span>
           <br className="md:hidden" />
           <HeroRotatingText />
         </h1>
       </header>
 
       {/* ═══════════ QUAL É O PROBLEMA? ═══════════ */}
-      <article className="col-span-4 border-3 border-border brutal-shadow bg-blue text-[#FFFFFF] p-8 md:p-12 flex flex-col gap-8">
-        <h2 className="font-heading text-[clamp(2rem,4vw,4rem)] font-bold uppercase leading-tight max-w-3xl">
-          Processo lento, site sem função e nem usa IA?
-        </h2>
-        <p className="font-heading text-[clamp(2rem,4vw,4rem)] font-bold uppercase leading-tight max-w-3xl">
-          Eu sei como é.
-        </p>
+      <article className="col-span-4 border-3 border-border brutal-shadow bg-background text-foreground p-8 md:p-12 flex flex-col gap-8">
+        <span className="font-body text-blue dark:text-acid tracking-widest text-sm uppercase">{t.home.problemsLabel}</span>
+
+        <div className="flex flex-col gap-4">
+          <h2 className="font-heading text-[clamp(2rem,4vw,5rem)] font-bold uppercase leading-tight max-w-5xl">
+            {t.home.problemsTitle}
+          </h2>
+          <p className="font-heading text-[clamp(2rem,4vw,5rem)] font-bold uppercase leading-tight text-blue dark:text-acid">
+            {t.home.problemsEmpathy}
+          </p>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 font-body text-base md:text-lg leading-relaxed">
-          {[
-            {
-              text: "Já vi supermercado anotar datas de validade em caderno, e resolvi criando um aplicativo que diminuiu perdas e economizou tempo.",
-            },
-            {
-              text: "E o que acha de um site que busca, traduz e publica notícias automaticamente? Eu criei, e ajudou uma equipe a focar em conteúdos mais elaborados.",
-            },
-            {
-              text: "Imagine um aplicativo que te ajuda a fugir dos lugares mais barulhentos da cidade. Não precisa imaginar,",
-              link: { label: "já existe.", href: "/ferramentas" },
-            },
-            {
-              text: "É 2026 e estão imprimindo listas para cotação de produtos? Eu não aceito isso. Desenvolvi um sistema que processa as listas, organiza e auxilia na criação do pedido de compra.",
-            },
-          ].map(({ text, link }, i) => (
-            <div key={i} className="flex gap-4 items-start">
-              <span className="font-heading font-bold text-acid shrink-0 text-xl mt-0.5">[{i + 1}]</span>
-              <p>
-                {text}{" "}
-                {link && (
-                  <Link href={link.href} className="underline underline-offset-4 hover:text-acid font-bold">
-                    {link.label}
-                  </Link>
-                )}
-              </p>
+          {t.home.examples.map((example, i) => (
+            <div key={i} className="border-l-4 border-blue dark:border-acid pl-6">
+              <span className="text-blue dark:text-acid font-bold mr-2">[{i + 1}]</span>
+              {example.text}{" "}
+              {exampleLinks[i] && (
+                <Link
+                  href={exampleLinks[i]!.href}
+                  {...("external" in exampleLinks[i]! && exampleLinks[i]!.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                  className="underline underline-offset-4 hover:text-blue dark:hover:text-acid font-bold"
+                >
+                  {exampleLinks[i]!.label}
+                </Link>
+              )}
+              {"suffix" in example && example.suffix && <>{" "}{example.suffix}</>}
             </div>
           ))}
         </div>
@@ -94,25 +98,23 @@ export default function Home() {
       {/* ═══════════ CASO REAL ═══════════ */}
       <article className="col-span-4 border-3 border-border brutal-shadow bg-background p-8 md:p-12 flex flex-col gap-8">
         <p className="font-body text-sm font-bold uppercase tracking-widest text-muted">
-          // Caso real
+          {t.home.caseLabel}
         </p>
         <h2 className="font-heading text-[clamp(2rem,4vw,5rem)] font-bold uppercase leading-tight max-w-4xl">
-          Um designer com IA resolveu o que 10 programadores ignoraram.
+          {t.home.caseTitle}
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-body text-base md:text-lg leading-relaxed max-w-5xl">
-          <p>
-            Um supermercado com equipe de TI dedicada, mas setores inteiros operando com caderno e caneta. Controle de validade, pedidos do açougue, farmácia, tudo manual, tudo lento.
-          </p>
-          <p>
-            Eu observei, construí e entreguei. Sozinho. Os repositores escaneavam código de barras no celular, o gerente via os dados em tempo real. O açougue ganhou um painel de produção. A farmácia, inteligência de uso.
-          </p>
-          <p>
-            Dois meses depois de ser demitido por ter feito demais, a empresa tentou replicar a solução. Não conseguiu. A farmácia ligou pedindo acesso de volta.
-          </p>
-        </div>
+        <p className="font-body text-base md:text-lg leading-relaxed max-w-3xl">
+          {t.home.caseText}
+        </p>
         <blockquote className="font-heading text-xl md:text-2xl font-bold uppercase border-l-3 border-blue dark:border-acid pl-5 text-foreground max-w-2xl">
-          "Não construí do jeito que eu gostava. Construí do jeito que resolvia."
+          &ldquo;{t.home.caseQuote}&rdquo;
         </blockquote>
+        <Link
+          href="/conteudo/sites-e-aplicativos/arbalest-digital"
+          className="brutal-btn brutal-btn-adaptive px-6 py-3 font-body text-sm font-bold uppercase tracking-wide self-start"
+        >
+          {t.home.caseCta}
+        </Link>
       </article>
 
       {/* ═══════════ EU QUEM? ═══════════ */}
@@ -121,7 +123,7 @@ export default function Home() {
         className="col-span-4 border-3 border-border brutal-shadow bg-background p-6 md:p-12 flex flex-col gap-8"
       >
         <h2 className="font-heading text-[clamp(2.5rem,5vw,4rem)] font-bold uppercase leading-none">
-          Eu quem?
+          {t.home.aboutTitle}
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-8 md:gap-12">
@@ -131,10 +133,11 @@ export default function Home() {
             className="border-3 border-border bg-foreground min-h-[300px] md:min-h-[400px] overflow-hidden relative"
           >
             <Image
-              src="/eu.png"
+              src="/Home-Image.png"
               alt="Foto do Rodrigo"
               fill
               sizes="(max-width: 768px) 100vw, 300px"
+              quality={90}
               className={`object-cover transition-none md:hover:grayscale-0 md:hover:contrast-[1.1] ${isImageVisible ? "grayscale-0 contrast-[1.1]" : "grayscale contrast-[1.2]"}`}
               priority
             />
@@ -144,28 +147,25 @@ export default function Home() {
           <div className="flex flex-col justify-center gap-6">
             <div className="border-3 border-border bg-background text-foreground p-6 md:p-8 font-body text-base md:text-lg leading-relaxed flex flex-col gap-4">
               <p>
-                <span className="text-blue dark:text-acid font-bold">&gt;</span> Rodrigo Matos. Aquele cara chato que reclama de processos
-                lentos, sistemas burocráticos e pergunta: &ldquo;por que não
-                estão usando inteligência artificial?&rdquo;.
+                <span className="text-blue dark:text-acid font-bold">&gt;</span> {t.home.aboutLine1}
               </p>
               <p>
-                <span className="text-blue dark:text-acid font-bold">&gt;</span> Eu crio sites funcionais, ferramentas que te ajudam no
-                trabalho ou melhoram a interação com seu cliente.
+                <span className="text-blue dark:text-acid font-bold">&gt;</span> {t.home.aboutLine2}
               </p>
-              <p><span className="text-blue dark:text-acid font-bold">&gt;</span> Quer um exemplo? Você já está em um.</p>
+              <p><span className="text-blue dark:text-acid font-bold">&gt;</span> {t.home.aboutLine3}</p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
                 href="/sobre"
                 className="brutal-btn brutal-btn-adaptive px-6 py-3 font-body text-sm font-bold uppercase tracking-wide text-center"
               >
-                Veja mais sobre mim
+                {t.home.aboutBtnAbout}
               </Link>
               <Link
                 href="/ferramentas"
                 className="brutal-btn brutal-btn-adaptive px-6 py-3 font-body text-sm font-bold uppercase tracking-wide text-center"
               >
-                Veja as ferramentas
+                {t.home.aboutBtnTools}
               </Link>
             </div>
           </div>
@@ -173,36 +173,15 @@ export default function Home() {
       </article>
 
 
-      {/* ═══════════ TERMINAL — CONSULTORIA ═══════════ */}
-      <Link
-        href="/servicos"
-        className="col-span-4 border-3 border-border brutal-shadow bg-blue text-[#FFFFFF] font-body text-base md:text-lg py-5 md:py-6 px-6 md:px-8 flex items-center gap-3 hover:bg-acid hover:text-[#000000] active:bg-acid active:text-[#000000]"
-        style={{
-          transitionTimingFunction: "steps(1)",
-          transitionDuration: "0s",
-          transitionProperty: "background-color, color",
-        }}
-      >
-        <span className="font-bold text-xl">&gt;_</span>
-        <span className="uppercase tracking-wide">
-          SYSTEM.EXEC / CONSULTORIA:{" "}
-          <span className="opacity-80">
-            Não precisa de código? Veja como otimizar seu fluxo.
-          </span>
-        </span>
-        <span className="animate-blink ml-2">█</span>
-      </Link>
 
-      {/* ═══════════ CTA FINAL ═══════════ */}
+{/* ═══════════ CTA FINAL ═══════════ */}
       <article className="col-span-4 border-3 border-border brutal-shadow bg-background p-8 md:p-12">
         <h2 className="font-heading text-[clamp(2rem,5vw,4rem)] font-bold uppercase leading-tight mb-6 text-foreground">
-          Vamos descobrir o que você realmente precisa?
+          {t.home.ctaTitle}
         </h2>
         <div className="flex flex-col gap-6">
           <p className="font-body text-lg md:text-xl font-medium max-w-3xl text-foreground">
-            Não tem essa de &ldquo;valor inbox&rdquo;. O projeto custa o que for
-            necessário para resolver o seu problema específico. Vamos marcar uma
-            conversa e analisar o seu cenário.
+            {t.home.ctaText}
           </p>
           <div className="flex flex-col gap-3 items-start">
             <Link
@@ -211,11 +190,10 @@ export default function Home() {
               rel="noopener noreferrer"
               className="brutal-btn brutal-btn-adaptive px-8 md:px-12 py-4 md:py-5 font-body text-lg md:text-xl font-bold uppercase tracking-wide text-center"
             >
-              Quero agendar uma análise do meu negócio
+              {t.home.ctaBtn}
             </Link>
             <span className="font-body text-sm font-bold text-foreground opacity-70">
-              // isso vai abrir o WhatsApp, mas só coloquei um texto tipo
-              profissional
+              {t.home.ctaNote}
             </span>
           </div>
         </div>

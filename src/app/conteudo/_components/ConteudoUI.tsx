@@ -1,7 +1,8 @@
+"use client";
+
 import Link from "next/link";
-import { getLatestPosts, type Post } from "@/lib/supabase";
-import { getServerTranslations } from "@/i18n/server";
-import NewsletterButton from "@/components/NewsletterButton";
+import type { Post } from "@/lib/supabase";
+import { useT } from "@/contexts/LanguageContext";
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("pt-BR", {
@@ -42,21 +43,19 @@ function PostRow({ post, category }: { post: Post; category: string }) {
   );
 }
 
+type CategoryKey = "sites-e-aplicativos" | "analises" | "projetos";
+
 function SectionBlock({
-  title,
-  category,
+  categoryKey,
   href,
   posts,
-  seeAll,
-  noPosts,
 }: {
-  title: string;
-  category: string;
+  categoryKey: CategoryKey;
   href: string;
   posts: Post[];
-  seeAll: string;
-  noPosts: string;
 }) {
+  const { t } = useT();
+  const title = t.content.sections[categoryKey];
   return (
     <section className="col-span-4 border-3 border-border brutal-shadow bg-background">
       {/* Header */}
@@ -68,87 +67,61 @@ function SectionBlock({
           href={href}
           className="brutal-btn brutal-btn-adaptive px-3 py-1.5 font-body text-xs font-bold uppercase tracking-wide"
         >
-          {seeAll}
+          {t.content.seeAll}
         </Link>
       </div>
 
       {/* Posts */}
       {posts.length > 0 ? (
         posts.map((post) => (
-          <PostRow key={post.id} post={post} category={category} />
+          <PostRow key={post.id} post={post} category={categoryKey} />
         ))
       ) : (
         <div className="px-4 md:px-8 py-8 border-t-3 border-border font-body text-sm opacity-50">
-          {noPosts}
+          {t.content.noPosts}
         </div>
       )}
     </section>
   );
 }
 
-export const dynamic = "force-dynamic";
-
-export const metadata = {
-  title: "Conteúdo",
-  description:
-    "Análises, críticas e projetos. O que eu estou fazendo, testando e pensando.",
-};
-
-function withTimeout<T>(promise: Promise<T>, ms: number, fallback: T): Promise<T> {
-  const timeout = new Promise<T>((resolve) => setTimeout(() => resolve(fallback), ms));
-  return Promise.race([promise.catch(() => fallback), timeout]);
+interface ConteudoUIProps {
+  sites: Post[];
+  analises: Post[];
+  projetos: Post[];
 }
 
-export default async function Conteudo() {
-  const { t, lang } = await getServerTranslations();
-  const empty = [] as Post[];
-  const [sites, analises, projetos] = await Promise.all([
-    withTimeout(getLatestPosts("sites-e-aplicativos", 5), 5000, empty),
-    withTimeout(getLatestPosts("analises", 5), 5000, empty),
-    withTimeout(getLatestPosts("projetos", 5), 5000, empty),
-  ]);
-
+export default function ConteudoUI({ sites, analises, projetos }: ConteudoUIProps) {
+  const { t } = useT();
   return (
-    <main id="main-content" className="grid grid-cols-4 gap-4 md:gap-8">
+    <>
       {/* Hero */}
       <header className="col-span-4 border-3 border-border brutal-shadow bg-background p-8 md:p-12 lg:py-24 lg:px-12">
         <h1 className="font-heading text-[clamp(3rem,6vw,12rem)] font-bold uppercase leading-[1.1] tracking-tight relative z-[1]">
           {t.content.heroTitle}
         </h1>
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mt-4">
-          <p className="font-body text-base md:text-lg text-muted relative z-[1] max-w-xl">
-            {t.content.heroSubtitle}
-          </p>
-          <NewsletterButton lang={lang} />
-        </div>
+        <p className="font-body text-base md:text-lg text-muted mt-4 relative z-[1] max-w-xl">
+          {t.content.heroSubtitle}
+        </p>
       </header>
 
       <SectionBlock
-        title={t.content.sections["sites-e-aplicativos"]}
-        category="sites-e-aplicativos"
+        categoryKey="sites-e-aplicativos"
         href="/conteudo/sites-e-aplicativos"
         posts={sites}
-        seeAll={t.content.seeAll}
-        noPosts={t.content.noPosts}
       />
 
       <SectionBlock
-        title={t.content.sections["analises"]}
-        category="analises"
+        categoryKey="analises"
         href="/conteudo/analises"
         posts={analises}
-        seeAll={t.content.seeAll}
-        noPosts={t.content.noPosts}
       />
 
       <SectionBlock
-        title={t.content.sections["projetos"]}
-        category="projetos"
+        categoryKey="projetos"
         href="/conteudo/projetos"
         posts={projetos}
-        seeAll={t.content.seeAll}
-        noPosts={t.content.noPosts}
       />
-    </main>
+    </>
   );
 }

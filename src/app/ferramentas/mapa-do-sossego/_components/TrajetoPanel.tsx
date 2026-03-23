@@ -6,6 +6,7 @@ import type { NoiseType } from "../_lib/supabase-noise";
 import LoginModal from "./LoginModal";
 import { useAuth } from "../_lib/use-auth";
 import { snapToRoad } from "../_lib/map-matching";
+import { useT } from "@/contexts/LanguageContext";
 
 interface Props {
   map: mapboxgl.Map;
@@ -15,15 +16,15 @@ interface Props {
 type RecordingStatus = "idle" | "recording" | "classifying" | "sending" | "done";
 type ReportStep = "choose" | "noisy-categories";
 
-const NOISY_CATEGORIES: { type: NoiseType; label: string; emoji: string }[] = [
-  { type: "latidos",    label: "Latidos",          emoji: "🐕" },
-  { type: "festas",     label: "Festas/noturno",   emoji: "🎵" },
-  { type: "bares",      label: "Bares/rua",        emoji: "🍻" },
-  { type: "transito",   label: "Trânsito",         emoji: "🚗" },
-  { type: "igrejas",    label: "Igrejas/cultos",   emoji: "⛪" },
-  { type: "industrias", label: "Indústrias",       emoji: "🏭" },
-  { type: "alarmes",    label: "Alarmes/sirenes",  emoji: "🚨" },
-  { type: "vizinhanca", label: "Vizinhança",       emoji: "🗣️" },
+const NOISY_CATEGORY_KEYS: { type: NoiseType; emoji: string }[] = [
+  { type: "latidos",    emoji: "🐕" },
+  { type: "festas",     emoji: "🎵" },
+  { type: "bares",      emoji: "🍻" },
+  { type: "transito",   emoji: "🚗" },
+  { type: "igrejas",    emoji: "⛪" },
+  { type: "industrias", emoji: "🏭" },
+  { type: "alarmes",    emoji: "🚨" },
+  { type: "vizinhanca", emoji: "🗣️" },
 ];
 
 const MAX_DURATION_MS   = 5 * 60 * 1000; // 5 minutos
@@ -37,6 +38,18 @@ export default function TrajetoPanel({ map, onSegmentsUpdated }: Props) {
   const [status, setStatus]             = useState<RecordingStatus>("idle");
   const [reportStep, setReportStep]     = useState<ReportStep>("choose");
   const [timeLeft, setTimeLeft]         = useState(MAX_DURATION_MS);
+  const { t } = useT();
+
+  const noiseTypeLabels: Record<string, string> = {
+    latidos:    t.map.noiseTypes.barking,
+    festas:     t.map.noiseTypes.parties,
+    bares:      t.map.noiseTypes.bars,
+    transito:   t.map.noiseTypes.traffic,
+    igrejas:    t.map.noiseTypes.churches,
+    industrias: t.map.noiseTypes.industries,
+    alarmes:    t.map.noiseTypes.alarms,
+    vizinhanca: t.map.noiseTypes.neighbors,
+  };
 
   // Pontos GPS acumulados na sessão atual
   const pointsRef      = useRef<[number, number][]>([]);
@@ -159,7 +172,7 @@ export default function TrajetoPanel({ map, onSegmentsUpdated }: Props) {
 
     try {
       const token = await getAccessToken();
-      if (!token) throw new Error("Sessão expirada. Faça login novamente.");
+      if (!token) throw new Error(t.map.trajeto.sessionExpired);
 
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/validate-noise-segment`,
@@ -225,7 +238,7 @@ export default function TrajetoPanel({ map, onSegmentsUpdated }: Props) {
           onClick={() => { if (!user) { setShowLogin(true); } else { startRecording(); } }}
           className="w-full font-body font-bold text-xs uppercase tracking-wide px-3 py-2 map-chip-active text-center"
         >
-          🚶 Gravar Trajeto
+          {t.map.trajeto.record}
         </button>
       )}
 
@@ -240,7 +253,7 @@ export default function TrajetoPanel({ map, onSegmentsUpdated }: Props) {
             className="w-full font-body font-bold text-xs uppercase tracking-wide px-3 py-2 bg-red-500 text-black border-2 border-black"
             style={{ boxShadow: "3px 3px 0 #000" }}
           >
-            ⏹ Parar
+            {t.map.trajeto.stop}
           </button>
         </div>
       )}
@@ -250,7 +263,7 @@ export default function TrajetoPanel({ map, onSegmentsUpdated }: Props) {
           <div className="pointer-events-auto w-full max-w-lg bg-[#F4F4F0] border-t-3 border-black p-5 flex flex-col gap-4"
             style={{ boxShadow: "0 -4px 0 #000" }}>
             <p className="font-heading text-base font-bold uppercase text-black">
-              {reportStep === "choose" ? "Como estava o ruído nesse trecho?" : "Qual tipo de barulho?"}
+              {reportStep === "choose" ? t.map.trajeto.classifyPrompt : t.map.trajeto.noiseTypePrompt}
             </p>
 
             {reportStep === "choose" ? (
@@ -260,14 +273,14 @@ export default function TrajetoPanel({ map, onSegmentsUpdated }: Props) {
                   className="bg-green-500 text-black font-body font-bold uppercase text-sm py-5 border-3 border-black flex flex-col items-center gap-1 active:scale-95"
                   style={{ boxShadow: "4px 4px 0 #000" }}
                 >
-                  <span className="text-2xl">🌿</span> Sossegado
+                  <span className="text-2xl">🌿</span> {t.map.trajeto.quiet.replace("🌿 ", "")}
                 </button>
                 <button
                   onClick={() => setReportStep("noisy-categories")}
                   className="bg-red-500 text-black font-body font-bold uppercase text-sm py-5 border-3 border-black flex flex-col items-center gap-1 active:scale-95"
                   style={{ boxShadow: "4px 4px 0 #000" }}
                 >
-                  <span className="text-2xl">🔊</span> Barulhento
+                  <span className="text-2xl">🔊</span> {t.map.trajeto.noisy.replace("🔊 ", "")}
                 </button>
               </div>
             ) : (
@@ -276,10 +289,10 @@ export default function TrajetoPanel({ map, onSegmentsUpdated }: Props) {
                   onClick={() => setReportStep("choose")}
                   className="self-start font-body text-xs text-black/50 uppercase tracking-wide !text-black/50"
                 >
-                  ← Voltar
+                  {t.map.trajeto.back}
                 </button>
                 <div className="grid grid-cols-2 gap-2">
-                  {NOISY_CATEGORIES.map(({ type, label, emoji }) => (
+                  {NOISY_CATEGORY_KEYS.map(({ type, emoji }) => (
                     <button
                       key={type}
                       onClick={() => classifySegment(type)}
@@ -287,7 +300,7 @@ export default function TrajetoPanel({ map, onSegmentsUpdated }: Props) {
                       style={{ boxShadow: "3px 3px 0 #000" }}
                     >
                       <span className="text-lg shrink-0">{emoji}</span>
-                      {label}
+                      {noiseTypeLabels[type]}
                     </button>
                   ))}
                 </div>
@@ -300,14 +313,14 @@ export default function TrajetoPanel({ map, onSegmentsUpdated }: Props) {
       {status === "sending" && (
         <div className="font-body text-xs uppercase tracking-wide px-3 py-2 bg-[#F4F4F0] text-black border-2 border-black animate-pulse"
           style={{ boxShadow: "3px 3px 0 #000" }}>
-          Salvando…
+          {t.map.trajeto.saving}
         </div>
       )}
 
       {status === "done" && (
         <div className="font-body text-xs uppercase tracking-wide px-3 py-2 bg-green-500 text-black border-2 border-black font-bold"
           style={{ boxShadow: "3px 3px 0 #000" }}>
-          ✓ Trajeto salvo!
+          {t.map.trajeto.saved}
         </div>
       )}
     </>

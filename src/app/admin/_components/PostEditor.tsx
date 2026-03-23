@@ -4,8 +4,43 @@ import { useState, useRef, useTransition } from "react";
 import dynamic from "next/dynamic";
 import { createPost, updatePost, uploadImage } from "../actions";
 import type { Post } from "@/lib/supabase";
+import type { ICommand } from "@uiw/react-md-editor";
 
 const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
+
+const imageSizeCommand: ICommand = {
+  name: "image-size",
+  keyCommand: "image-size",
+  buttonProps: { "aria-label": "Imagem 50%", title: "Reduzir imagem para 50%" },
+  icon: (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+      <text x="0" y="18" fontSize="13" fontWeight="bold" fontFamily="sans-serif">½</text>
+    </svg>
+  ),
+  execute(state, api) {
+    const selected = state.selectedText;
+    const match = selected.match(/!\[([^\]]*)\]\(([^)]+)\)/);
+    if (match) {
+      const [, alt, src] = match;
+      api.replaceSelection(`<img src="${src}" alt="${alt}" style="width:50%;height:auto;" />`);
+    }
+  },
+};
+
+const highlightCommand: ICommand = {
+  name: "highlight",
+  keyCommand: "highlight",
+  buttonProps: { "aria-label": "Highlight", title: "Highlight (Ctrl+H)" },
+  icon: (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+      <text x="0" y="18" fontSize="18" fontWeight="bold" fontFamily="sans-serif">H</text>
+    </svg>
+  ),
+  execute(state, api) {
+    const selected = state.selectedText || "texto";
+    api.replaceSelection(`<mark>${selected}</mark>`);
+  },
+};
 
 function generateSlug(title: string): string {
   return title
@@ -37,6 +72,7 @@ export default function PostEditor({ post }: PostEditorProps) {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const coverInputRef = useRef<HTMLInputElement>(null);
+  const cursorPosRef = useRef<number | null>(null);
 
   const handleTitleChange = (val: string) => {
     setTitle(val);
@@ -61,7 +97,11 @@ export default function PostEditor({ post }: PostEditorProps) {
     const file = e.target.files?.[0];
     if (!file) return;
     const url = await handleImageUpload(file);
-    setContent((prev) => prev + `\n\n![${file.name}](${url})\n`);
+    const imageMarkdown = `\n\n![${file.name}](${url})\n`;
+    setContent((prev) => {
+      const pos = cursorPosRef.current ?? prev.length;
+      return prev.slice(0, pos) + imageMarkdown + prev.slice(pos);
+    });
     e.target.value = "";
   };
 
@@ -198,14 +238,34 @@ export default function PostEditor({ post }: PostEditorProps) {
       </div>
 
       {/* Markdown editor */}
-      <div className="flex flex-col gap-2">
+      <div
+        className="flex flex-col gap-2"
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={async (e) => {
+          e.preventDefault();
+          const file = Array.from(e.dataTransfer.files).find((f) => f.type.startsWith("image/"));
+          if (!file) return;
+          const textarea = document.querySelector<HTMLTextAreaElement>(".w-md-editor-text-input");
+          cursorPosRef.current = textarea?.selectionStart ?? null;
+          const url = await handleImageUpload(file);
+          const imageMarkdown = `\n\n![${file.name}](${url})\n`;
+          setContent((prev) => {
+            const pos = cursorPosRef.current ?? prev.length;
+            return prev.slice(0, pos) + imageMarkdown + prev.slice(pos);
+          });
+        }}
+      >
         <div className="flex items-center justify-between">
           <label className="font-body text-xs font-bold uppercase tracking-wide opacity-60">
             Conteúdo (Markdown)
           </label>
           <button
             type="button"
-            onClick={() => fileInputRef.current?.click()}
+            onClick={() => {
+              const textarea = document.querySelector<HTMLTextAreaElement>(".w-md-editor-text-input");
+              cursorPosRef.current = textarea?.selectionStart ?? null;
+              fileInputRef.current?.click();
+            }}
             disabled={uploading}
             className="font-body text-xs font-bold uppercase tracking-wide px-3 py-1.5 border-3 border-border hover:bg-acid hover:text-[#000000] disabled:opacity-50"
             style={{ transitionTimingFunction: "steps(1)", transitionDuration: "0s", transitionProperty: "background-color, color" }}
@@ -226,6 +286,7 @@ export default function PostEditor({ post }: PostEditorProps) {
             onChange={(val) => setContent(val ?? "")}
             height={500}
             preview="live"
+            extraCommands={[imageSizeCommand, highlightCommand]}
           />
         </div>
       </div>

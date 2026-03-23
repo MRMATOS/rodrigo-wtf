@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import type mapboxgl from "mapbox-gl";
 import type { NoiseZone } from "../_lib/supabase-noise";
+import { useT } from "@/contexts/LanguageContext";
 
 interface Props {
   map:   mapboxgl.Map;
@@ -33,6 +34,7 @@ async function reverseGeocode(lng: number, lat: number): Promise<string> {
 export default function StatsPanel({ map, zones }: Props) {
   const [open, setOpen]       = useState(false);
   const [names, setNames]     = useState<Record<string, string>>({});
+  const { t } = useT();
 
   const noisy = zones.filter((z) => z.noisy_count > 0).slice(0, 5);
   const quiet = zones.filter((z) => z.quiet_count > 0 && z.noisy_count === 0).slice(0, 5);
@@ -75,7 +77,7 @@ export default function StatsPanel({ map, zones }: Props) {
       <button
         onClick={() => setOpen((v) => !v)}
         className="w-14 h-10 font-body text-base transition-all active:scale-95 flex items-center justify-center map-btn-fixed map-stats-btn border-2"
-        aria-label="Estatísticas"
+        aria-label={t.map.stats.title}
       >
         📊
       </button>
@@ -86,15 +88,15 @@ export default function StatsPanel({ map, zones }: Props) {
         }`}
       >
         <div className="p-4 flex flex-col gap-4">
-          <h3 className="font-heading text-sm font-bold uppercase">Estatísticas</h3>
+          <h3 className="font-heading text-sm font-bold uppercase">{t.map.stats.title}</h3>
 
           {zones.length === 0 ? (
-            <p className="font-body text-xs text-muted">Ainda sem dados suficientes.</p>
+            <p className="font-body text-xs text-muted">{t.map.stats.noData}</p>
           ) : (
             <>
               {noisy.length > 0 && (
                 <section>
-                  <p className="font-body text-xs text-red-400 uppercase tracking-wide mb-2">🔴 Mais críticas</p>
+                  <p className="font-body text-xs text-red-400 uppercase tracking-wide mb-2">{t.map.stats.mostCritical}</p>
                   {noisy.map((z, i) => (
                     <button
                       key={i}
@@ -110,7 +112,7 @@ export default function StatsPanel({ map, zones }: Props) {
 
               {quiet.length > 0 && (
                 <section>
-                  <p className="font-body text-xs text-green-400 uppercase tracking-wide mb-2">🟢 Mais silenciosas</p>
+                  <p className="font-body text-xs text-green-400 uppercase tracking-wide mb-2">{t.map.stats.mostQuiet}</p>
                   {quiet.map((z, i) => (
                     <button
                       key={i}

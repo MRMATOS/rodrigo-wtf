@@ -1,5 +1,7 @@
 "use client";
 
+import { useT } from "@/contexts/LanguageContext";
+
 type Shift     = "all" | "day" | "night";
 type Intensity = "all" | "high" | "quiet";
 
@@ -26,15 +28,16 @@ function Chip({
 }
 
 export default function FilterBar({ shift, intensityFilter, onShiftChange, onIntensityChange }: Props) {
+  const { t } = useT();
   return (
     <div className="flex flex-col gap-1 w-28">
-      <Chip active={shift === "all"}   onClick={() => onShiftChange("all")}>   🕐 Todos</Chip>
-      <Chip active={shift === "day"}   onClick={() => onShiftChange("day")}>   ☀️ Dia</Chip>
-      <Chip active={shift === "night"} onClick={() => onShiftChange("night")}> 🌙 Noite</Chip>
+      <Chip active={shift === "all"}   onClick={() => onShiftChange("all")}>   🕐 {t.map.filter.allTimes}</Chip>
+      <Chip active={shift === "day"}   onClick={() => onShiftChange("day")}>   ☀️ {t.map.filter.day}</Chip>
+      <Chip active={shift === "night"} onClick={() => onShiftChange("night")}> 🌙 {t.map.filter.night}</Chip>
       <div className="h-px bg-black dark:bg-white my-0.5" />
-      <Chip active={intensityFilter === "all"}   onClick={() => onIntensityChange("all")}>   Tudo</Chip>
-      <Chip active={intensityFilter === "high"}  onClick={() => onIntensityChange("high")}>  🔴 Crítico</Chip>
-      <Chip active={intensityFilter === "quiet"} onClick={() => onIntensityChange("quiet")}> 🟢 Sossego</Chip>
+      <Chip active={intensityFilter === "all"}   onClick={() => onIntensityChange("all")}>   {t.map.filter.allIntensity}</Chip>
+      <Chip active={intensityFilter === "high"}  onClick={() => onIntensityChange("high")}>  🔴 {t.map.filter.critical}</Chip>
+      <Chip active={intensityFilter === "quiet"} onClick={() => onIntensityChange("quiet")}> 🟢 {t.map.filter.quietFilter}</Chip>
     </div>
   );
 }

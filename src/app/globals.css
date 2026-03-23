@@ -43,6 +43,13 @@
   /* Same magenta as light mode */
 }
 
+/* Highlight / mark */
+mark {
+  background-color: var(--acid);
+  color: #000000;
+  padding: 0 2px;
+}
+
 /* Base body */
 body {
   background-color: var(--bg);

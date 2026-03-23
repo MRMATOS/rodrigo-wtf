@@ -2,22 +2,22 @@
 
 import { useState } from "react";
 import type { NoiseType } from "../_lib/supabase-noise";
+import { useT } from "@/contexts/LanguageContext";
 
 type NoiseCategory = {
   type: NoiseType;
-  label: string;
   emoji: string;
 };
 
-const NOISY_CATEGORIES: NoiseCategory[] = [
-  { type: "latidos",    label: "Latidos constantes",      emoji: "🐕" },
-  { type: "festas",     label: "Festas e vida noturna",   emoji: "🎵" },
-  { type: "bares",      label: "Bares e pessoas na rua",  emoji: "🍻" },
-  { type: "transito",   label: "Trânsito barulhento",     emoji: "🚗" },
-  { type: "igrejas",    label: "Igrejas e cultos",        emoji: "⛪" },
-  { type: "industrias", label: "Indústrias ou oficinas",  emoji: "🏭" },
-  { type: "alarmes",    label: "Alarmes ou sirenes",      emoji: "🚨" },
-  { type: "vizinhanca", label: "Vizinhança ruidosa",      emoji: "🗣️" },
+const NOISY_CATEGORY_KEYS: NoiseCategory[] = [
+  { type: "latidos",    emoji: "🐕" },
+  { type: "festas",     emoji: "🎵" },
+  { type: "bares",      emoji: "🍻" },
+  { type: "transito",   emoji: "🚗" },
+  { type: "igrejas",    emoji: "⛪" },
+  { type: "industrias", emoji: "🏭" },
+  { type: "alarmes",    emoji: "🚨" },
+  { type: "vizinhanca", emoji: "🗣️" },
 ];
 
 type Step   = "choose" | "noisy-categories";
@@ -41,6 +41,18 @@ export default function ReportButton({ onReported }: { onReported?: () => void }
   const [status, setStatus]       = useState<Status>("idle");
   const [errorMsg, setErrorMsg]   = useState("");
   const [cooldownSec, setCooldownSec] = useState(0);
+  const { t } = useT();
+
+  const reportTypeLabels: Record<string, string> = {
+    latidos:    t.map.report.reportTypes.barking,
+    festas:     t.map.report.reportTypes.parties,
+    bares:      t.map.report.reportTypes.bars,
+    transito:   t.map.report.reportTypes.traffic,
+    igrejas:    t.map.report.reportTypes.churches,
+    industrias: t.map.report.reportTypes.industries,
+    alarmes:    t.map.report.reportTypes.alarms,
+    vizinhanca: t.map.report.reportTypes.neighbors,
+  };
 
   function handleOpen() {
     const remaining = getCooldownRemaining();
@@ -82,7 +94,7 @@ export default function ReportButton({ onReported }: { onReported?: () => void }
       });
     } catch {
       setStatus("error");
-      setErrorMsg("Não foi possível obter sua localização.");
+      setErrorMsg(t.map.report.errorLocation);
       return;
     }
 
@@ -97,7 +109,11 @@ export default function ReportButton({ onReported }: { onReported?: () => void }
             "Content-Type": "application/json",
             "Authorization": `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
           },
-          body: JSON.stringify({ noise_type: noiseType, lng: coords.longitude, lat: coords.latitude }),
+          body: JSON.stringify({
+            noise_type: noiseType,
+            lng: Math.round(coords.longitude * 1000) / 1000,
+            lat: Math.round(coords.latitude * 1000) / 1000,
+          }),
         }
       );
 
@@ -112,7 +128,7 @@ export default function ReportButton({ onReported }: { onReported?: () => void }
       setTimeout(() => { setStatus("idle"); setOpen(false); setStep("choose"); }, 2000);
     } catch (err) {
       setStatus("error");
-      setErrorMsg(err instanceof Error ? err.message : "Erro ao enviar reporte.");
+      setErrorMsg(err instanceof Error ? err.message : t.map.report.errorSend);
     }
   }
 
@@ -146,14 +162,14 @@ export default function ReportButton({ onReported }: { onReported?: () => void }
         <div className="p-6 flex flex-col gap-5 max-w-lg mx-auto">
           <div className="flex items-center justify-between">
             <h2 className="font-heading text-xl font-bold uppercase">
-              {step === "noisy-categories" ? "Qual tipo de barulho?" : "Como está aqui?"}
+              {step === "noisy-categories" ? t.map.report.noiseTypePrompt : t.map.report.prompt}
             </h2>
             <button
               onClick={handleClose}
               disabled={busy}
               className="font-body text-muted text-sm uppercase tracking-wide disabled:opacity-40"
             >
-              Fechar
+              {t.map.report.close}
             </button>
           </div>
 
@@ -164,15 +180,15 @@ export default function ReportButton({ onReported }: { onReported?: () => void }
             </p>
           ) : status === "success" ? (
             <p className="font-body text-center text-green-400 font-bold uppercase tracking-wide py-4">
-              ✓ Reporte enviado!
+              {t.map.report.success}
             </p>
           ) : status === "locating" ? (
             <p className="font-body text-center text-muted uppercase tracking-wide py-4 animate-pulse">
-              Obtendo localização...
+              {t.map.report.locating}
             </p>
           ) : status === "sending" ? (
             <p className="font-body text-center text-muted uppercase tracking-wide py-4 animate-pulse">
-              Enviando...
+              {t.map.report.sending}
             </p>
           ) : step === "choose" ? (
             /* Passo 1 — Sossegado ou Barulhento */
@@ -182,14 +198,14 @@ export default function ReportButton({ onReported }: { onReported?: () => void }
                 className="bg-green-500 hover:bg-green-400 text-black font-body font-bold uppercase tracking-wide text-sm py-6 px-3 border-3 border-border brutal-shadow flex flex-col items-center gap-2 transition-transform active:scale-95"
               >
                 <span className="text-3xl">🌿</span>
-                Sossegado
+                {t.map.report.quiet.replace("🌿 ", "")}
               </button>
               <button
                 onClick={() => setStep("noisy-categories")}
                 className="bg-red-500 hover:bg-red-400 text-black font-body font-bold uppercase tracking-wide text-sm py-6 px-3 border-3 border-border brutal-shadow flex flex-col items-center gap-2 transition-transform active:scale-95"
               >
                 <span className="text-3xl">🔊</span>
-                Barulhento
+                {t.map.report.noisy.replace("🔊 ", "")}
               </button>
             </div>
           ) : (
@@ -199,17 +215,17 @@ export default function ReportButton({ onReported }: { onReported?: () => void }
                 onClick={() => setStep("choose")}
                 className="self-start font-body text-muted text-xs uppercase tracking-wide"
               >
-                ← Voltar
+                {t.map.report.back}
               </button>
               <div className="grid grid-cols-2 gap-2">
-                {NOISY_CATEGORIES.map(({ type, label, emoji }) => (
+                {NOISY_CATEGORY_KEYS.map(({ type, emoji }) => (
                   <button
                     key={type}
                     onClick={() => sendReport(type)}
                     className="bg-card hover:bg-card/80 text-foreground font-body text-xs uppercase tracking-wide py-3 px-3 border-2 border-border brutal-shadow flex items-center gap-2 transition-transform active:scale-95 text-left"
                   >
                     <span className="text-xl shrink-0">{emoji}</span>
-                    {label}
+                    {reportTypeLabels[type]}
                   </button>
                 ))}
               </div>

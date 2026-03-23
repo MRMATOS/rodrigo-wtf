@@ -1,14 +1,12 @@
+"use client";
+
 import Link from "next/link";
 import { AccordionItem } from "@/components/Accordion";
 import ProcessoBlock from "./_components/ProcessoBlock";
-
-export const metadata = {
-  title: "Serviços — rodrigo.wtf",
-  description:
-    "Como funciona a criação de sites funcionais e consultoria. Sem bullshit.",
-};
+import { useT } from "@/contexts/LanguageContext";
 
 export default function Servicos() {
+  const { t } = useT();
   return (
     <main id="main-content" className="grid grid-cols-4 gap-4 md:gap-8">
       {/* ═══════════ HERO ═══════════ */}
@@ -24,36 +22,28 @@ export default function Servicos() {
           }}
         />
         <h1 className="font-heading text-[clamp(3rem,6vw,10rem)] font-bold uppercase leading-[1.1] tracking-tight relative z-[1]">
-          Eu faço sites funcionais,{" "}
+          {t.services.heroTitle}{" "}
           <span className="relative inline-block mb-1 md:mb-0">
-            <span className="pl-2 pr-[8px] md:pr-[16px]">como esse aqui</span>
+            <span className="pl-2 pr-[8px] md:pr-[16px]">{t.services.heroHighlight}</span>
             <span
               className="absolute left-0 top-0 w-full h-full pl-2 pr-[8px] md:pr-[16px] bg-acid text-[#000000] animate-selection-w1"
               aria-hidden="true"
             >
-              como esse aqui
+              {t.services.heroHighlight}
             </span>
           </span>
         </h1>
         <p className="font-body text-base md:text-lg text-muted mt-4 relative z-[1] max-w-xl">
-          // sites, apps e consultoria para pequenas e médias empresas
+          {t.services.heroSubtitle}
         </p>
       </header>
 
       {/* ═══════════ INTRO TEXT ═══════════ */}
       <article className="col-span-4 border-3 border-border brutal-shadow bg-blue text-[#FFFFFF] p-8 md:p-12">
         <div className="font-body text-base md:text-lg leading-relaxed flex flex-col gap-6 max-w-3xl">
-          <p>
-            Eu crio sites funcionais com base nas necessidades reais do seu negócio.
-            Através de conversas, pesquisa e testes, eu monto uma plataforma que pode:
-          </p>
+          <p>{t.services.introText}</p>
           <ul className="flex flex-col gap-2 pl-2">
-            {[
-              "digitalizar serviços",
-              "automatizar processos",
-              "conectar empresa e cliente",
-              "entre outras possibilidades",
-            ].map((item) => (
+            {t.services.capabilities.map((item) => (
               <li key={item} className="flex gap-3 items-baseline">
                 <span className="font-bold text-acid shrink-0">—</span>
                 <span>{item}</span>
@@ -61,40 +51,23 @@ export default function Servicos() {
             ))}
           </ul>
           <p>
-            Não é um site para exibir informação, é uma <strong>ferramenta de trabalho</strong> para o seu negócio.
+            {t.services.introEmphasis}
           </p>
         </div>
         <h3 className="font-heading text-xl md:text-2xl font-bold mt-12 text-acid">
-          /// Veja como funciona o processo:
+          {t.services.introTransition}
         </h3>
       </article>
 
       {/* ═══════════ ACCORDIONS ═══════════ */}
       <article className="col-span-4 border-3 border-border brutal-shadow bg-background p-6 md:p-12 flex flex-col gap-6">
-        <AccordionItem index={1} title="Como funciona o processo" symbol=">_">
+        <AccordionItem index={1} title={t.services.accordionProcess} symbol=">_">
           <ProcessoBlock />
         </AccordionItem>
 
-        <AccordionItem index={2} title="Dúvidas frequentes" symbol="?_">
+        <AccordionItem index={2} title={t.services.accordionFaq} symbol="?_">
           <div className="flex flex-col gap-6">
-            {[
-              {
-                q: "O meu site vai ser igual ao seu, tudo estranho?",
-                a: "Não. O meu site é o meu site. O seu vai ser exatamente como precisa ser, seguindo o visual do seu negócio e fazendo parte da sua identidade. Eu gero os materiais necessários, incluindo imagens com IA, mas de forma profissional e alinhada com a sua marca.",
-              },
-              {
-                q: "E se eu não precisar de um site?",
-                a: "Sem problema. Há ferramentas prontas, gratuitas ou baratas, que resolvem 90% dos casos. Se for o seu caso, eu indico e te ajudo a implementar. Meu foco é resolver o problema, não criar soluções desnecessárias.",
-              },
-              {
-                q: "Como funciona o acompanhamento durante o projeto?",
-                a: "Você vai acompanhar cada etapa online e pode testar antes da entrega final. Tudo é documentado, conversas, decisões, concepção e entrega. Você sempre sabe o que está sendo feito e por quê.",
-              },
-              {
-                q: "E se eu não souber explicar o que preciso?",
-                a: "Esse é exatamente o ponto de partida. Você não precisa chegar com a solução pronta, só precisa me contar o que te atrapalha hoje. A partir disso, eu faço as perguntas certas e monto o diagnóstico.",
-              },
-            ].map(({ q, a }) => (
+            {t.services.faq.map(({ q, a }) => (
               <div key={q} className="flex flex-col gap-2">
                 <p className="font-body font-bold text-base md:text-lg">{q}</p>
                 <p className="font-body text-base md:text-lg text-muted leading-relaxed">{a}</p>
@@ -107,12 +80,11 @@ export default function Servicos() {
       {/* ═══════════ CTA FINAL ═══════════ */}
       <article className="col-span-4 border-3 border-border brutal-shadow bg-background p-8 md:p-12">
         <h2 className="font-heading text-[clamp(2rem,5vw,4rem)] font-bold uppercase leading-tight mb-6 text-foreground">
-          Tem um problema? Me conta.
+          {t.services.ctaTitle}
         </h2>
         <div className="flex flex-col gap-6">
           <p className="font-body text-lg md:text-xl font-medium max-w-3xl text-foreground">
-            Manda uma mensagem explicando o que te atrapalha hoje.
-            Sem compromisso, eu respondo com uma análise do que pode ser feito.
+            {t.services.ctaText}
           </p>
           <div className="flex flex-col gap-3 items-start">
             <Link
@@ -121,10 +93,10 @@ export default function Servicos() {
               rel="noopener noreferrer"
               className="brutal-btn brutal-btn-adaptive px-8 md:px-12 py-4 md:py-5 font-body text-lg md:text-xl font-bold uppercase tracking-wide text-center"
             >
-              Quero agendar uma análise do meu negócio
+              {t.services.ctaBtn}
             </Link>
             <span className="font-body text-sm font-bold text-foreground opacity-70">
-              // resposta em até 24h
+              {t.services.ctaNote}
             </span>
           </div>
         </div>

@@ -1,9 +1,13 @@
-import Link from "next/link";
+"use client";
 
-export default function Footer() {
+import Link from "next/link";
+import { useT } from "@/contexts/LanguageContext";
+
+export default function Footer({ showAdmin = false }: { showAdmin?: boolean }) {
+  const { t } = useT();
   return (
     <footer className="border-3 border-border brutal-shadow bg-background text-foreground text-center py-6 px-4 font-body text-sm font-bold uppercase tracking-widest">
-      rodrigo matos - A.I Builder{" "}
+      {t.footer.credit}{" "}
       //{" "}
       <Link href="/versoes" className="underline underline-offset-4 hover:text-acid transition-colors">
         v2.2
@@ -11,12 +15,20 @@ export default function Footer() {
       {" "}
       //{" "}
       <Link href="/privacidade" className="underline underline-offset-4 hover:text-acid transition-colors">
-        privacidade
+        {t.footer.privacy}
       </Link>
       {" - "}
       <Link href="/termos" className="underline underline-offset-4 hover:text-acid transition-colors">
-        termos
+        {t.footer.terms}
       </Link>
+      {showAdmin && (
+        <>
+          {" - "}
+          <Link href="/admin" className="underline underline-offset-4 hover:text-acid transition-colors">
+            {t.footer.admin}
+          </Link>
+        </>
+      )}
     </footer>
   );
 }

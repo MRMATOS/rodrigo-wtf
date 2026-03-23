@@ -1,24 +1,14 @@
+"use client";
+
 import Link from "next/link";
-
-export const metadata = {
-  title: "Ferramentas — rodrigo.wtf",
-  description: "Ferramentas que eu construí para resolver problemas reais.",
-};
-
-const tools = [
-  {
-    slug: "mapa-do-sossego",
-    name: "Mapa do Sossego",
-    tagline: "Mapeamento colaborativo de ruído urbano",
-    description:
-      "Waze para pedestres antissociais e inquilinos exigentes. Descubra quais ruas têm cachorros que latem, bares barulhentos ou paz absoluta, antes de caminhar ou alugar.",
-    status: "Beta Aberto",
-    statusColor: "bg-acid text-[#000000]",
-    tags: ["Mapa", "Geolocalização", "Colaborativo"],
-  },
-];
+import { useT } from "@/contexts/LanguageContext";
 
 export default function Ferramentas() {
+  const { t } = useT();
+
+  const tool = t.tools.tool1;
+  const statusColor = "bg-acid text-[#000000]";
+
   return (
     <main id="main-content" className="grid grid-cols-4 gap-4 md:gap-8">
       {/* ═══════════ HERO ═══════════ */}
@@ -33,61 +23,58 @@ export default function Ferramentas() {
           }}
         />
         <h1 className="font-heading text-[clamp(3rem,6vw,12rem)] font-bold uppercase leading-[1.1] tracking-tight relative z-[1]">
-          Ferramentas
+          {t.tools.heroTitle}
         </h1>
         <p className="font-body text-base md:text-lg text-muted mt-4 relative z-[1] max-w-xl">
-          // coisas que eu construí para resolver problemas reais
+          {t.tools.heroSubtitle}
         </p>
       </header>
 
       {/* ═══════════ TOOLS LIST ═══════════ */}
-      {tools.map((tool) => (
-        <article
-          key={tool.slug}
-          className="col-span-4 border-3 border-border brutal-shadow bg-background p-6 md:p-10 flex flex-col gap-6"
-        >
-          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-3 flex-wrap">
-                <h2 className="font-heading text-2xl md:text-4xl font-bold uppercase">
-                  {tool.name}
-                </h2>
-                <span
-                  className={`font-body text-xs font-bold uppercase tracking-widest px-2 py-1 border-3 border-border ${tool.statusColor}`}
-                >
-                  {tool.status}
-                </span>
-              </div>
-              <p className="font-body text-sm font-bold text-muted uppercase tracking-wide">
-                {tool.tagline}
-              </p>
+      <article
+        className="col-span-4 border-3 border-border brutal-shadow bg-background p-6 md:p-10 flex flex-col gap-6"
+      >
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-3 flex-wrap">
+              <h2 className="font-heading text-2xl md:text-4xl font-bold uppercase">
+                {tool.name}
+              </h2>
+              <span
+                className={`font-body text-xs font-bold uppercase tracking-widest px-2 py-1 border-3 border-border ${statusColor}`}
+              >
+                {tool.status}
+              </span>
             </div>
+            <p className="font-body text-sm font-bold text-muted uppercase tracking-wide">
+              {tool.tagline}
+            </p>
           </div>
+        </div>
 
-          <p className="font-body text-base md:text-lg leading-relaxed max-w-3xl">
-            {tool.description}
-          </p>
+        <p className="font-body text-base md:text-lg leading-relaxed max-w-3xl">
+          {tool.description}
+        </p>
 
-          <div className="flex flex-col sm:flex-row items-start gap-4">
-            <Link
-              href={`/ferramentas/${tool.slug}`}
-              className="brutal-btn brutal-btn-adaptive px-8 py-4 font-body text-base font-bold uppercase tracking-wide"
-            >
-              Abrir ferramenta
-            </Link>
-            <div className="flex gap-2 flex-wrap">
-              {tool.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="font-body text-xs font-bold uppercase tracking-widest px-2 py-1 border-3 border-border bg-background text-muted"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
+        <div className="flex flex-col sm:flex-row items-start gap-4">
+          <Link
+            href="/ferramentas/mapa-do-sossego"
+            className="brutal-btn brutal-btn-adaptive px-8 py-4 font-body text-base font-bold uppercase tracking-wide"
+          >
+            {t.tools.openBtn}
+          </Link>
+          <div className="flex gap-2 flex-wrap">
+            {tool.tags.map((tag) => (
+              <span
+                key={tag}
+                className="font-body text-xs font-bold uppercase tracking-widest px-2 py-1 border-3 border-border bg-background text-muted"
+              >
+                {tag}
+              </span>
+            ))}
           </div>
-        </article>
-      ))}
+        </div>
+      </article>
     </main>
   );
 }
