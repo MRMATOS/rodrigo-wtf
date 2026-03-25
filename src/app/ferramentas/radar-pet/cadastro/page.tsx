@@ -1,14 +1,14 @@
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useT } from "@/contexts/LanguageContext";
 import { useAuth } from "../_lib/use-auth";
 import LoginModal from "../_components/LoginModal";
 import PetForm from "../_components/PetForm";
 import type { PetType } from "../_lib/supabase-pets";
 
-export default function CadastroPage() {
+function CadastroContent() {
   const { t } = useT();
   const { user, loading, signInWithGoogle } = useAuth();
   const searchParams = useSearchParams();
@@ -58,5 +58,17 @@ export default function CadastroPage() {
         />
       )}
     </main>
+  );
+}
+
+export default function CadastroPage() {
+  return (
+    <Suspense fallback={
+      <main className="flex items-center justify-center min-h-64">
+        <p className="font-body text-muted animate-pulse">Carregando...</p>
+      </main>
+    }>
+      <CadastroContent />
+    </Suspense>
   );
 }
