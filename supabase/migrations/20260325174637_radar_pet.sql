@@ -23,7 +23,11 @@ create table pets (
   resolved_via resolved_via,
   created_at timestamptz not null default now(),
   last_renewed_at timestamptz not null default now(),
-  reminder_sent_at timestamptz
+  reminder_sent_at timestamptz,
+  constraint reward_consistency check (
+    (reward = false and reward_amount is null)
+    or (reward = true)
+  )
 );
 
 -- RLS
@@ -47,7 +51,8 @@ create policy "Owner inserts"
 -- Dono atualiza
 create policy "Owner updates"
   on pets for update
-  using (auth.uid() = user_id);
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
 
 -- Dono deleta
 create policy "Owner deletes"
@@ -67,7 +72,16 @@ create policy "Public read pet photos"
 -- Storage policy: upload apenas autenticado
 create policy "Auth upload pet photos"
   on storage.objects for insert
-  with check (bucket_id = 'pet-photos' and auth.role() = 'authenticated');
+  with check (
+    bucket_id = 'pet-photos'
+    and auth.role() = 'authenticated'
+    and auth.uid()::text = (storage.foldername(name))[1]
+  );
+
+-- Storage policy: dono atualiza a própria foto
+create policy "Auth update own pet photos"
+  on storage.objects for update
+  using (bucket_id = 'pet-photos' and auth.uid()::text = (storage.foldername(name))[1]);
 
 -- Storage policy: dono deleta a própria foto
 create policy "Auth delete own pet photos"
