@@ -94,7 +94,8 @@ export default function PetForm({ type, userId }: Props) {
     setError(null);
 
     if (!photoFile) { setError(tc.errorPhoto); return; }
-    if (!whatsapp.trim()) { setError(tc.errorWhatsapp); return; }
+    const whatsappClean = whatsapp.trim().replace(/\D/g, "");
+    if (!whatsappClean || whatsappClean.length < 8) { setError(tc.errorWhatsapp); return; }
     if (!coords) { setError(tc.errorLocation); return; }
 
     setSubmitting(true);
@@ -107,7 +108,7 @@ export default function PetForm({ type, userId }: Props) {
         breed: type === "lost" ? breed || undefined : undefined,
         description,
         photo_url: photoUrl,
-        whatsapp: whatsapp.trim(),
+        whatsapp: whatsappClean,
         neighborhood: neighborhood.trim(),
         lat: coords.lat,
         lng: coords.lng,
@@ -212,13 +213,16 @@ export default function PetForm({ type, userId }: Props) {
             <span className="font-body text-sm font-bold uppercase tracking-wide">{tc.labelReward}</span>
           </label>
           {reward && (
-            <input
-              type="text"
-              value={rewardAmount}
-              onChange={(e) => setRewardAmount(e.target.value)}
-              placeholder={tc.placeholderRewardAmount}
-              className="border-3 border-border bg-background font-body text-sm px-3 py-3 focus:outline-none"
-            />
+            <div className="flex flex-col gap-2">
+              <label className="font-body text-xs font-bold uppercase tracking-widest">{tc.labelRewardAmount}</label>
+              <input
+                type="text"
+                value={rewardAmount}
+                onChange={(e) => setRewardAmount(e.target.value)}
+                placeholder={tc.placeholderRewardAmount}
+                className="border-3 border-border bg-background font-body text-sm px-3 py-3 focus:outline-none"
+              />
+            </div>
           )}
         </div>
       )}

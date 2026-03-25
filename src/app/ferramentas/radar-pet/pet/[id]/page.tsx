@@ -4,6 +4,8 @@ import type { Pet } from "../../_lib/supabase-pets";
 import PetPageLost from "../../_components/PetPageLost";
 import PetPageFound from "../../_components/PetPageFound";
 
+export const dynamic = "force-dynamic";
+
 async function fetchPet(id: string): Promise<Pet | null> {
   const client = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -29,13 +31,13 @@ export default async function PetPublicPage({
 
   return (
     <main id="main-content" className="max-w-lg mx-auto py-8 px-4">
-      {pet.status === "resolved" ? (
+      {pet.status === "resolved" || pet.status === "expired" ? (
         <div className="border-3 border-border brutal-shadow bg-background p-8 text-center flex flex-col gap-4">
           <p className="font-heading text-2xl font-bold uppercase">
-            Caso Resolvido
+            Caso Encerrado
           </p>
           <p className="font-body text-muted">
-            O pet foi reencontrado. Obrigado a todos que ajudaram!
+            Este anúncio foi encerrado ou expirou.
           </p>
         </div>
       ) : pet.type === "lost" ? (

@@ -87,3 +87,15 @@ create policy "Auth update own pet photos"
 create policy "Auth delete own pet photos"
   on storage.objects for delete
   using (bucket_id = 'pet-photos' and auth.uid()::text = (storage.foldername(name))[1]);
+
+-- Agendar o TTL diário às 3h UTC
+-- Requer a extensão pg_cron (habilitada por padrão no Supabase)
+-- A URL da função precisa ser configurada manualmente no Supabase Dashboard
+-- ou via variável de ambiente SUPABASE_PROJECT_URL
+-- select cron.schedule(
+--   'radar-pet-ttl-daily',
+--   '0 3 * * *',
+--   $$ select net.http_post(url := current_setting(''app.supabase_url'') || ''/functions/v1/radar-pet-ttl'', headers := json_build_object(''Authorization'', ''Bearer '' || current_setting(''app.service_role_key''))::jsonb) $$
+-- );
+-- NOTE: Uncomment and configure after deploying the Edge Function.
+-- Alternatively, set the schedule in the Supabase Dashboard under Edge Functions > radar-pet-ttl > Schedule.
