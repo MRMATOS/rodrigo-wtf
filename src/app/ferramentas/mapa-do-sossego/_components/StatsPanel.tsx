@@ -34,10 +34,13 @@ async function reverseGeocode(lng: number, lat: number): Promise<string> {
 }
 
 export default function StatsPanel({ map, zones }: Props) {
-  const [open, setOpen]     = useState(false);
-  const [filter, setFilter] = useState<Filter>("all");
-  const [names, setNames]   = useState<Record<string, string>>({});
+  const [open, setOpen]       = useState(false);
+  const [filter, setFilter]   = useState<Filter>("all");
+  const [names, setNames]     = useState<Record<string, string>>({});
+  const [mounted, setMounted] = useState(false);
   const { t } = useT();
+
+  useEffect(() => { setMounted(true); }, []);
 
   const noisy = zones.filter((z) => z.noisy_count > 0).slice(0, 5);
   const quiet = zones.filter((z) => z.quiet_count > 0 && z.noisy_count === 0).slice(0, 5);
@@ -94,7 +97,7 @@ export default function StatsPanel({ map, zones }: Props) {
       </button>
 
       {/* Modal portal */}
-      {open && createPortal(
+      {mounted && open && createPortal(
         <>
           {/* Backdrop */}
           <div
