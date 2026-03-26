@@ -45,31 +45,37 @@ interface TplProps {
 
 // ─── Template 1: Só o QR ─────────────────────────────────────────────────────
 
-function TplQrOnly({ url, caption, color, s = 1 }: TplProps) {
+function TplQrOnly({ url, caption, color, noBorder, s = 1 }: TplProps) {
   const { w, h } = DIMS["qr-only"];
-  const qrSize   = Math.round(320 * s);
+  const qrSize   = Math.round((noBorder ? 400 : 320) * s);
 
   return (
     <div style={{
       width: w * s, height: h * s,
       display: "flex", flexDirection: "column",
       alignItems: "center", justifyContent: "center",
-      backgroundColor: color,
+      backgroundColor: noBorder ? "#ffffff" : color,
       borderRadius: 20 * s,
       gap: 14 * s,
       fontFamily: "Arial, Helvetica, sans-serif",
     }}>
-      <div style={{
-        backgroundColor: "#ffffff",
-        padding: 12 * s,
-        borderRadius: 12 * s,
-      }}>
+      {noBorder ? (
         <QRCodeCanvas value={url} size={qrSize} bgColor="#ffffff" fgColor="#000000" level="M" />
-      </div>
+      ) : (
+        <div style={{
+          backgroundColor: "#ffffff",
+          padding: 12 * s,
+          borderRadius: 12 * s,
+        }}>
+          <QRCodeCanvas value={url} size={qrSize} bgColor="#ffffff" fgColor="#000000" level="M" />
+        </div>
+      )}
       {caption && (
         <span style={{
-          fontSize: 22 * s, color: "#ffffff",
-          opacity: 0.85, textAlign: "center",
+          fontSize: 22 * s,
+          color: noBorder ? "#111111" : "#ffffff",
+          opacity: noBorder ? 1 : 0.85,
+          textAlign: "center",
           paddingInline: 24 * s,
         }}>
           {caption}
