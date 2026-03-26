@@ -146,3 +146,18 @@ export async function uploadPetPhoto(
   const { data } = client.storage.from("pet-photos").getPublicUrl(path);
   return data.publicUrl;
 }
+
+export async function getCityWithMostPets(): Promise<string | null> {
+  const { data, error } = await getClient()
+    .from("pets")
+    .select("city")
+    .eq("status", "active");
+  if (error || !data || data.length === 0) return null;
+
+  const counts: Record<string, number> = {};
+  for (const row of data) {
+    if (row.city) counts[row.city] = (counts[row.city] ?? 0) + 1;
+  }
+  const topCity = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+  return topCity ? topCity[0] : null;
+}
