@@ -134,7 +134,7 @@ function TplTicket({ url, info, caption, color, s = 1 }: TplProps) {
 
 // ─── Template 3: Quadrado ─────────────────────────────────────────────────────
 
-function TplCard({ url, info, caption, color, s = 1 }: TplProps) {
+function TplCard({ url, info, caption, color, noBorder, s = 1 }: TplProps) {
   const { w, h } = DIMS.card;
   const qrSize   = Math.round(200 * s);
 
@@ -145,7 +145,7 @@ function TplCard({ url, info, caption, color, s = 1 }: TplProps) {
       alignItems: "center",
       backgroundColor: "#ffffff",
       borderRadius: 20 * s,
-      border: `${4 * s}px solid ${color}`,
+      border: noBorder ? "none" : `${4 * s}px solid ${color}`,
       overflow: "hidden",
       fontFamily: "Arial, Helvetica, sans-serif",
       boxSizing: "border-box",
@@ -169,15 +169,19 @@ function TplCard({ url, info, caption, color, s = 1 }: TplProps) {
         padding: `${40 * s}px ${48 * s}px`,
         flexShrink: 0,
       }}>
-        <div style={{
-          backgroundColor: color,
-          padding: 16 * s,
-          borderRadius: 16 * s,
-        }}>
-          <div style={{ backgroundColor: "#ffffff", padding: 8 * s, borderRadius: 8 * s }}>
-            <QRCodeCanvas value={url} size={qrSize} bgColor="#ffffff" fgColor="#000000" level="M" />
+        {noBorder ? (
+          <QRCodeCanvas value={url} size={qrSize} bgColor="#ffffff" fgColor="#000000" level="M" />
+        ) : (
+          <div style={{
+            backgroundColor: color,
+            padding: 16 * s,
+            borderRadius: 16 * s,
+          }}>
+            <div style={{ backgroundColor: "#ffffff", padding: 8 * s, borderRadius: 8 * s }}>
+              <QRCodeCanvas value={url} size={qrSize} bgColor="#ffffff" fgColor="#000000" level="M" />
+            </div>
           </div>
-        </div>
+        )}
         {caption && (
           <span style={{
             fontSize: 20 * s, color: "#555555",
