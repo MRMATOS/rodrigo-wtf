@@ -27,11 +27,12 @@ export function useAuth() {
   }, []);
 
   async function signInWithGoogle() {
-    const next = window.location.pathname + window.location.search;
+    // Salva a página atual para redirecionar de volta após o login
+    sessionStorage.setItem("radar-pet-next", window.location.pathname + window.location.search);
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/radar-pet-callback?next=${encodeURIComponent(next)}`,
+        redirectTo: `${window.location.origin}/auth/radar-pet-callback`,
       },
     });
   }

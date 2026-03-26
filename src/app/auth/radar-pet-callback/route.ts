@@ -6,7 +6,6 @@ import type { NextRequest } from "next/server";
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  const next = searchParams.get("next") ?? "/ferramentas/radar-pet";
 
   if (code) {
     const cookieStore = await cookies();
@@ -29,7 +28,9 @@ export async function GET(request: NextRequest) {
 
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
-      return NextResponse.redirect(`${origin}${next}`);
+      // sessionStorage não é acessível server-side — redireciona para a ferramenta
+      // O client-side vai ler o sessionStorage e redirecionar para a página certa
+      return NextResponse.redirect(`${origin}/ferramentas/radar-pet?login=ok`);
     }
   }
 

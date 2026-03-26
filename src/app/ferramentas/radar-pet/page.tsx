@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, useCallback, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useT } from "@/contexts/LanguageContext";
 import { useAuth } from "./_lib/use-auth";
 import { getActivePetsByCity, getCityWithMostPets } from "./_lib/supabase-pets";
@@ -12,6 +12,26 @@ import FilterBar from "./_components/FilterBar";
 import LoginModal from "./_components/LoginModal";
 
 type FilterType = "all" | "lost" | "found";
+
+// Componente separado para lidar com useSearchParams (requer Suspense)
+function LoginRedirectHandler({ user, loading }: { user: ReturnType<typeof useAuth>["user"]; loading: boolean }) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get("login") === "ok" && !loading && user) {
+      const next = sessionStorage.getItem("radar-pet-next");
+      sessionStorage.removeItem("radar-pet-next");
+      if (next && next !== "/ferramentas/radar-pet") {
+        router.replace(next);
+      } else {
+        router.replace("/ferramentas/radar-pet");
+      }
+    }
+  }, [searchParams, loading, user, router]);
+
+  return null;
+}
 
 export default function RadarPetHub() {
   const { t } = useT();
@@ -93,6 +113,11 @@ export default function RadarPetHub() {
 
   return (
     <main id="main-content" className="flex flex-col gap-4 md:gap-8">
+      {/* Lida com redirect pós-login sem bloquear o prerender */}
+      <Suspense fallback={null}>
+        <LoginRedirectHandler user={user} loading={loading} />
+      </Suspense>
+
       {/* Header */}
       <header className="border-3 border-border brutal-shadow bg-background p-8 md:p-12">
         <h1 className="font-heading text-[clamp(2.5rem,5vw,8rem)] font-bold uppercase leading-[1.1] tracking-tight">
