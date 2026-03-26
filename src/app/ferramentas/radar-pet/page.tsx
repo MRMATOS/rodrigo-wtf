@@ -47,8 +47,15 @@ export default function RadarPetHub() {
   const [pendingAction, setPendingAction] = useState<"lost" | "found" | null>(null);
   const [geoCity, setGeoCity] = useState<string | null>(null);
 
-  // Tenta obter cidade via GPS; se negado, usa cidade com mais pets
+  // Carrega cidade mais popular imediatamente como fallback
+  // e sobrescreve com GPS se disponível
   useEffect(() => {
+    // Fallback imediato: cidade com mais pets (não espera GPS)
+    getCityWithMostPets().then((topCity) => {
+      if (topCity) setCity((prev) => prev || topCity);
+    });
+
+    // Tenta GPS em paralelo — se resolver, sobrescreve
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         const { latitude, longitude } = pos.coords;
@@ -70,11 +77,8 @@ export default function RadarPetHub() {
           // silently fail
         }
       },
-      async () => {
-        // GPS negado — carregar cidade com mais pets como padrão
-        const topCity = await getCityWithMostPets();
-        if (topCity) setCity(topCity);
-      }
+      () => {},
+      { timeout: 5000 }
     );
   }, []);
 
