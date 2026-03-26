@@ -226,7 +226,6 @@ export default function PosterGenerator({ pet, onClose }: Props) {
           left: "-9999px",
           width: `${POSTER_W}px`,
           pointerEvents: "none",
-          visibility: "hidden",
         }}
       >
         <PosterContent {...contentProps} />
