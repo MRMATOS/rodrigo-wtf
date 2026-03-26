@@ -136,6 +136,12 @@ export default function MeusPetsPage() {
                             </button>
                           )}
                           <button
+                            onClick={() => router.push(`/ferramentas/radar-pet/editar/${pet.id}`)}
+                            className="brutal-btn brutal-btn-adaptive px-4 py-2 font-body text-xs font-bold uppercase tracking-wide"
+                          >
+                            Editar
+                          </button>
+                          <button
                             onClick={() => setResolveTarget(pet)}
                             className="brutal-btn brutal-btn-adaptive px-4 py-2 font-body text-xs font-bold uppercase tracking-wide"
                           >
