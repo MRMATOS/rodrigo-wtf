@@ -29,7 +29,7 @@ export default function PetPageLost({ pet }: Props) {
         const { latitude, longitude } = pos.coords;
         const mapsUrl = `https://maps.google.com/?q=${latitude},${longitude}`;
         const text = encodeURIComponent(
-          `Oi, vi seu cartaz! Vi o ${pet.name ?? "seu pet"} aqui: ${mapsUrl}`
+          `${pet.name ?? "Seu pet"} pode estar aqui: ${mapsUrl}`
         );
         window.location.href = `https://wa.me/${pet.whatsapp}?text=${text}`;
       },

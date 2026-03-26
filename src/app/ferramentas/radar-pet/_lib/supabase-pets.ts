@@ -129,12 +129,28 @@ export async function deletePet(id: string): Promise<void> {
 
 // ─── Storage ──────────────────────────────────────────────────────────────────
 
+const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+
 export async function uploadPetPhoto(
   userId: string,
   file: File
 ): Promise<string> {
+  if (!ALLOWED_MIME_TYPES.includes(file.type)) {
+    throw new Error("Formato de arquivo não permitido. Use JPG, PNG, WEBP ou GIF.");
+  }
+  if (file.size > MAX_FILE_SIZE) {
+    throw new Error("A foto deve ter no máximo 10 MB.");
+  }
+
   const client = getClient();
-  const ext = file.name.split(".").pop();
+  const extMap: Record<string, string> = {
+    "image/jpeg": "jpg",
+    "image/png": "png",
+    "image/webp": "webp",
+    "image/gif": "gif",
+  };
+  const ext = extMap[file.type] ?? "jpg";
   const path = `${userId}/${Date.now()}.${ext}`;
 
   const { error } = await client.storage

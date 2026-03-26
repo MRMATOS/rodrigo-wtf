@@ -95,7 +95,7 @@ export default function PetForm({ type, userId }: Props) {
 
     if (type === "lost" && !photoFile) { setError(tc.errorPhoto); return; }
     const whatsappClean = whatsapp.trim().replace(/\D/g, "");
-    if (!whatsappClean || whatsappClean.length < 8) { setError(tc.errorWhatsapp); return; }
+    if (!whatsappClean || whatsappClean.length < 8 || whatsappClean.length > 13) { setError(tc.errorWhatsapp); return; }
     const whatsappFinal = whatsappClean.startsWith("55") ? whatsappClean : `55${whatsappClean}`;
     if (!coords) { setError(tc.errorLocation); return; }
 
@@ -119,7 +119,8 @@ export default function PetForm({ type, userId }: Props) {
       });
       router.push("/ferramentas/radar-pet/meus-pets");
     } catch (err) {
-      setError(String(err));
+      const msg = err instanceof Error ? err.message : null;
+      setError(msg && msg.length < 200 ? msg : "Erro ao salvar. Tente novamente.");
     } finally {
       setSubmitting(false);
     }
