@@ -96,11 +96,13 @@ export default function MeusPetsPage() {
                   >
                     <div className="flex items-start gap-4">
                       {pet.photo_url && (
-                        <img
-                          src={pet.photo_url}
-                          alt={pet.name ?? "Pet"}
-                          className="w-20 h-20 object-cover border-3 border-border flex-shrink-0"
-                        />
+                        <a href={`/ferramentas/radar-pet/pet/${pet.id}`}>
+                          <img
+                            src={pet.photo_url}
+                            alt={pet.name ?? "Pet"}
+                            className="w-20 h-20 object-cover border-3 border-border flex-shrink-0 hover:opacity-80 transition-opacity cursor-pointer"
+                          />
+                        </a>
                       )}
                       <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-2 flex-wrap">

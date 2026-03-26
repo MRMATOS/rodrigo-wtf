@@ -13,6 +13,14 @@ export default function PetPageLost({ pet }: Props) {
   const p = t.radarPet.petPage.lost;
 
   const [status, setStatus] = useState<"idle" | "loading" | "denied">("idle");
+  const [copied, setCopied] = useState(false);
+
+  function handleCopyLink() {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    });
+  }
 
   function handleSaw() {
     setStatus("loading");
@@ -83,6 +91,13 @@ export default function PetPageLost({ pet }: Props) {
             {status === "loading" ? p.gettingLocation : p.btnSaw}
           </button>
         )}
+
+        <button
+          onClick={handleCopyLink}
+          className="font-body text-sm font-bold uppercase tracking-wide px-8 py-4 border-3 border-border bg-background hover:bg-foreground/5 transition-colors"
+        >
+          {copied ? "✓ Link copiado!" : "Copiar link"}
+        </button>
       </div>
     </div>
   );

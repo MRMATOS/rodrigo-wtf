@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useT } from "@/contexts/LanguageContext";
 import type { Pet } from "../_lib/supabase-pets";
 
@@ -10,6 +11,14 @@ interface Props {
 export default function PetPageFound({ pet }: Props) {
   const { t } = useT();
   const p = t.radarPet.petPage.found;
+  const [copied, setCopied] = useState(false);
+
+  function handleCopyLink() {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    });
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -44,6 +53,13 @@ export default function PetPageFound({ pet }: Props) {
       >
         {p.btnOwner}
       </a>
+
+      <button
+        onClick={handleCopyLink}
+        className="font-body text-sm font-bold uppercase tracking-wide px-8 py-4 border-3 border-border bg-background hover:bg-foreground/5 transition-colors"
+      >
+        {copied ? "✓ Link copiado!" : "Copiar link"}
+      </button>
     </div>
   );
 }
