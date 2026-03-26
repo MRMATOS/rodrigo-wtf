@@ -12,6 +12,8 @@ import FilterBar from "./_components/FilterBar";
 import LoginModal from "./_components/LoginModal";
 
 type FilterType = "all" | "lost" | "found";
+type ViewMode = "map" | "list";
+const PAGE_SIZE = 5;
 
 // Componente separado para lidar com useSearchParams (requer Suspense)
 function LoginRedirectHandler({ user, loading }: { user: ReturnType<typeof useAuth>["user"]; loading: boolean }) {
@@ -46,6 +48,8 @@ export default function RadarPetHub() {
   const [showLogin, setShowLogin] = useState(false);
   const [pendingAction, setPendingAction] = useState<"lost" | "found" | null>(null);
   const [geoCity, setGeoCity] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<ViewMode>("map");
+  const [page, setPage] = useState(0);
 
   // Carrega cidade mais popular imediatamente como fallback
   // e sobrescreve com GPS se disponível
@@ -101,6 +105,12 @@ export default function RadarPetHub() {
     if (neighborhood && !p.neighborhood.toLowerCase().includes(neighborhood.toLowerCase())) return false;
     return true;
   });
+
+  const totalPages = Math.ceil(filteredPets.length / PAGE_SIZE);
+  const pagedPets = filteredPets.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+
+  function handleFilterChange(f: FilterType) { setFilter(f); setPage(0); }
+  function handleNeighborhoodChange(n: string) { setNeighborhood(n); setPage(0); }
 
   function handleAction(action: "lost" | "found") {
     if (!user) {
@@ -179,27 +189,86 @@ export default function RadarPetHub() {
         </div>
       )}
 
-      {/* Filters */}
+      {/* Filters + View toggle */}
       {city && (
-        <FilterBar
-          filter={filter}
-          neighborhood={neighborhood}
-          onFilterChange={setFilter}
-          onNeighborhoodChange={setNeighborhood}
-        />
-      )}
-
-      {/* Map + Feed */}
-      {city ? (
-        <div className="flex flex-col lg:flex-row gap-4 h-[600px]">
-          <div className="flex-1 border-3 border-border brutal-shadow overflow-hidden">
-            <MapHub pets={filteredPets} city={city} />
-          </div>
-          <div className="lg:w-80 border-3 border-border brutal-shadow overflow-y-auto">
-            <PetFeed pets={filteredPets} emptyLabel={t.radarPet.emptyState} />
+        <div className="flex flex-col gap-3">
+          <FilterBar
+            filter={filter}
+            neighborhood={neighborhood}
+            onFilterChange={handleFilterChange}
+            onNeighborhoodChange={handleNeighborhoodChange}
+          />
+          <div className="flex gap-0 border-3 border-border brutal-shadow w-fit">
+            <button
+              onClick={() => setViewMode("map")}
+              className={`px-6 py-2 font-body text-sm font-bold uppercase tracking-wide transition-colors ${
+                viewMode === "map"
+                  ? "bg-foreground text-background"
+                  : "bg-background text-foreground hover:bg-foreground/10"
+              }`}
+            >
+              Mapa
+            </button>
+            <button
+              onClick={() => { setViewMode("list"); setPage(0); }}
+              className={`px-6 py-2 font-body text-sm font-bold uppercase tracking-wide border-l-3 border-border transition-colors ${
+                viewMode === "list"
+                  ? "bg-foreground text-background"
+                  : "bg-background text-foreground hover:bg-foreground/10"
+              }`}
+            >
+              Lista
+            </button>
           </div>
         </div>
-      ) : null}
+      )}
+
+      {/* Map mode */}
+      {city && viewMode === "map" && (
+        <div className="border-3 border-border brutal-shadow overflow-hidden h-[600px]">
+          <MapHub pets={filteredPets} city={city} />
+        </div>
+      )}
+
+      {/* List mode */}
+      {city && viewMode === "list" && (
+        <div className="flex flex-col gap-0 border-3 border-border brutal-shadow">
+          {pagedPets.length === 0 ? (
+            <div className="p-8 text-center">
+              <p className="font-body text-sm text-muted">{t.radarPet.emptyState}</p>
+            </div>
+          ) : (
+            pagedPets.map((pet) => (
+              <div key={pet.id} className="border-b-3 border-border last:border-b-0">
+                <PetFeed pets={[pet]} emptyLabel="" />
+              </div>
+            ))
+          )}
+
+          {/* Paginação */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between px-4 py-3 border-t-3 border-border bg-background">
+              <button
+                onClick={() => setPage((p) => Math.max(0, p - 1))}
+                disabled={page === 0}
+                className="font-body text-xs font-bold uppercase tracking-widest px-4 py-2 border-3 border-border disabled:opacity-30 hover:bg-foreground/5 transition-colors"
+              >
+                ← Anterior
+              </button>
+              <span className="font-body text-xs text-muted">
+                {page + 1} / {totalPages}
+              </span>
+              <button
+                onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+                disabled={page === totalPages - 1}
+                className="font-body text-xs font-bold uppercase tracking-widest px-4 py-2 border-3 border-border disabled:opacity-30 hover:bg-foreground/5 transition-colors"
+              >
+                Próximo →
+              </button>
+            </div>
+          )}
+        </div>
+      )}
 
       {showLogin && (
         <LoginModal
