@@ -10,7 +10,7 @@ export default function Footer({ showAdmin = false }: { showAdmin?: boolean }) {
       {t.footer.credit}{" "}
       //{" "}
       <Link href="/versoes" className="underline underline-offset-4 hover:text-acid transition-colors">
-        v2.2
+        v3.0
       </Link>
       {" "}
       //{" "}
