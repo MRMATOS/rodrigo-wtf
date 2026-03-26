@@ -3,11 +3,15 @@
 import Link from "next/link";
 import { useT } from "@/contexts/LanguageContext";
 
+const statusColors: Record<string, string> = {
+  "Beta Aberto": "bg-acid text-[#000000]",
+  "Open Beta": "bg-acid text-[#000000]",
+  Novo: "bg-blue-500 text-white",
+  New: "bg-blue-500 text-white",
+};
+
 export default function Ferramentas() {
   const { t } = useT();
-
-  const tool = t.tools.tool1;
-  const statusColor = "bg-acid text-[#000000]";
 
   return (
     <main id="main-content" className="grid grid-cols-4 gap-4 md:gap-8">
@@ -31,50 +35,57 @@ export default function Ferramentas() {
       </header>
 
       {/* ═══════════ TOOLS LIST ═══════════ */}
-      <article
-        className="col-span-4 border-3 border-border brutal-shadow bg-background p-6 md:p-10 flex flex-col gap-6"
-      >
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-3 flex-wrap">
-              <h2 className="font-heading text-2xl md:text-4xl font-bold uppercase">
-                {tool.name}
-              </h2>
-              <span
-                className={`font-body text-xs font-bold uppercase tracking-widest px-2 py-1 border-3 border-border ${statusColor}`}
-              >
-                {tool.status}
-              </span>
-            </div>
-            <p className="font-body text-sm font-bold text-muted uppercase tracking-wide">
-              {tool.tagline}
-            </p>
-          </div>
-        </div>
-
-        <p className="font-body text-base md:text-lg leading-relaxed max-w-3xl">
-          {tool.description}
-        </p>
-
-        <div className="flex flex-col sm:flex-row items-start gap-4">
-          <Link
-            href="/ferramentas/mapa-do-sossego"
-            className="brutal-btn brutal-btn-adaptive px-8 py-4 font-body text-base font-bold uppercase tracking-wide"
+      {t.tools.items.map((tool) => {
+        const statusColor =
+          statusColors[tool.status] ?? "bg-acid text-[#000000]";
+        return (
+          <article
+            key={tool.slug}
+            className="col-span-4 border-3 border-border brutal-shadow bg-background p-6 md:p-10 flex flex-col gap-6"
           >
-            {t.tools.openBtn}
-          </Link>
-          <div className="flex gap-2 flex-wrap">
-            {tool.tags.map((tag) => (
-              <span
-                key={tag}
-                className="font-body text-xs font-bold uppercase tracking-widest px-2 py-1 border-3 border-border bg-background text-muted"
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-3 flex-wrap">
+                  <h2 className="font-heading text-2xl md:text-4xl font-bold uppercase">
+                    {tool.name}
+                  </h2>
+                  <span
+                    className={`font-body text-xs font-bold uppercase tracking-widest px-2 py-1 border-3 border-border ${statusColor}`}
+                  >
+                    {tool.status}
+                  </span>
+                </div>
+                <p className="font-body text-sm font-bold text-muted uppercase tracking-wide">
+                  {tool.tagline}
+                </p>
+              </div>
+            </div>
+
+            <p className="font-body text-base md:text-lg leading-relaxed max-w-3xl">
+              {tool.description}
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-start gap-4">
+              <Link
+                href={`/ferramentas/${tool.slug}`}
+                className="brutal-btn brutal-btn-adaptive px-8 py-4 font-body text-base font-bold uppercase tracking-wide"
               >
-                {tag}
-              </span>
-            ))}
-          </div>
-        </div>
-      </article>
+                {t.tools.openBtn}
+              </Link>
+              <div className="flex gap-2 flex-wrap">
+                {tool.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="font-body text-xs font-bold uppercase tracking-widest px-2 py-1 border-3 border-border bg-background text-muted"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </article>
+        );
+      })}
     </main>
   );
 }

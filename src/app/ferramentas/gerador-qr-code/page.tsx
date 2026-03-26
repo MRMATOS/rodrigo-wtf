@@ -489,7 +489,7 @@ export default function GeradorQRCode() {
               <span className="w-3 h-3 border-2 border-current flex items-center justify-center flex-shrink-0">
                 {noBorder && <span className="w-1.5 h-1.5 bg-current block" />}
               </span>
-              Sem borda
+              Borda
             </button>
           </div>
         </div>

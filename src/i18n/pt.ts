@@ -194,8 +194,8 @@ const pt = {
     qrGenerator: {
       heroTitle: "Gerador de QR Code",
       heroSubtitle: "// cole um link, escolha o modelo, baixe pronto",
-      labelLink: "Link ou texto",
-      placeholderLink: "https://wa.me/5511999999999",
+      labelLink: "Link, número ou texto",
+      placeholderLink: "42999999999 ou https://seusite.com",
       labelInfo: "Texto principal",
       placeholderInfo: "Ex: Fale conosco no WhatsApp",
       labelCaption: "Legenda (abaixo do QR)",
@@ -212,12 +212,16 @@ const pt = {
       quiet: "Sossegado",
       clickLine: "Clique na linha para detalhes",
     },
+    modes: {
+      label: "Modos",
+      zone: "Zona",
+      trajeto: "Trajeto",
+    },
     filter: {
-      allTimes: "Todos",
+      label: "Filtros",
       day: "Dia",
       night: "Noite",
-      allIntensity: "Tudo",
-      critical: "Crítico",
+      critical: "Barulho",
       quietFilter: "Sossego",
     },
     noiseTypes: {
@@ -243,6 +247,7 @@ const pt = {
       sessionExpired: "Sessão expirada. Faça login novamente.",
     },
     report: {
+      btnLabel: "Reportar",
       prompt: "Como está aqui?",
       noiseTypePrompt: "Qual tipo de barulho?",
       close: "Fechar",
@@ -268,7 +273,7 @@ const pt = {
     stats: {
       title: "Estatísticas",
       noData: "Ainda sem dados suficientes.",
-      mostCritical: "🔴 Mais críticas",
+      mostCritical: "🔴 Mais barulhentas",
       mostQuiet: "🟢 Mais silenciosas",
     },
   },

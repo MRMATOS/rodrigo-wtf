@@ -139,10 +139,11 @@ export default function ReportButton({ onReported }: { onReported?: () => void }
       {/* Botão de reporte */}
       <button
         onClick={handleOpen}
-        className="w-14 h-14 rounded-full bg-acid text-black font-body font-bold text-xl flex items-center justify-center transition-transform active:scale-95 map-btn-fixed border-3"
+        className="w-full font-body text-xs uppercase tracking-wide px-3 py-2 text-right transition-all active:scale-95 map-chip-active border-2 border-black"
+        style={{ boxShadow: "3px 3px 0 #000" }}
         aria-label="Reportar ruído"
       >
-        +
+        + {t.map.report.btnLabel}
       </button>
 
       {/* Overlay */}

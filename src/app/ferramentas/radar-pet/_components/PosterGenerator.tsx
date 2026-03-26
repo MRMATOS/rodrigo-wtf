@@ -38,7 +38,7 @@ function PosterContent({ pet, petUrl, statusLabel, infoLine }: PosterContentProp
       {/* Cabeçalho — fundo branco, sem tinta desnecessária */}
       <div style={{
         backgroundColor: "#ffffff",
-        padding: "20px 48px 40px",
+        padding: "2px 24px 74px",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",

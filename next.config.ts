@@ -35,8 +35,8 @@ const securityHeaders = [
       "base-uri 'self'",
       // Block <form> submissions to foreign origins
       "form-action 'self'",
-      // Force HTTPS on all sub-resource loads
-      "upgrade-insecure-requests",
+      // Force HTTPS on all sub-resource loads (prod only — breaks local IP dev on mobile)
+      ...(process.env.NODE_ENV === "production" ? ["upgrade-insecure-requests"] : []),
     ].join("; "),
   },
 ];

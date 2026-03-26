@@ -101,12 +101,12 @@ export default function StatsPanel({ map, zones }: Props) {
         <>
           {/* Backdrop */}
           <div
-            className="fixed inset-0 z-[100] bg-black/60"
+            className="fixed inset-0 z-[200] bg-black/60"
             onClick={() => setOpen(false)}
           />
 
           {/* Modal */}
-          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[101] w-[min(90vw,360px)] max-h-[70vh] flex flex-col bg-background border-3 border-border brutal-shadow">
+          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[201] w-[min(90vw,360px)] max-h-[70vh] flex flex-col bg-background border-3 border-border brutal-shadow">
             {/* Header */}
             <div className="flex items-center justify-between px-4 pt-4 pb-3 border-b-2 border-border shrink-0">
               <h3 className="font-heading text-sm font-bold uppercase">{t.map.stats.title}</h3>

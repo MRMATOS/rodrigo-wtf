@@ -194,8 +194,8 @@ const en = {
     qrGenerator: {
       heroTitle: "QR Code Generator",
       heroSubtitle: "// paste a link, pick a template, download",
-      labelLink: "Link or text",
-      placeholderLink: "https://wa.me/5511999999999",
+      labelLink: "Link, number or text",
+      placeholderLink: "42999999999 or https://yoursite.com",
       labelInfo: "Main text",
       placeholderInfo: "E.g.: Contact us on WhatsApp",
       labelCaption: "Caption (below QR)",
@@ -212,12 +212,16 @@ const en = {
       quiet: "Quiet",
       clickLine: "Click on line for details",
     },
+    modes: {
+      label: "Modes",
+      zone: "Zone",
+      trajeto: "Route",
+    },
     filter: {
-      allTimes: "All",
+      label: "Filters",
       day: "Day",
       night: "Night",
-      allIntensity: "All",
-      critical: "Critical",
+      critical: "Noise",
       quietFilter: "Quiet",
     },
     noiseTypes: {
@@ -243,6 +247,7 @@ const en = {
       sessionExpired: "Session expired. Please log in again.",
     },
     report: {
+      btnLabel: "Report",
       prompt: "How is it here?",
       noiseTypePrompt: "What type of noise?",
       close: "Close",
@@ -268,7 +273,7 @@ const en = {
     stats: {
       title: "Statistics",
       noData: "Not enough data yet.",
-      mostCritical: "🔴 Most critical",
+      mostCritical: "🔴 Noisiest",
       mostQuiet: "🟢 Most quiet",
     },
   },
