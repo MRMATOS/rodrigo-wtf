@@ -93,7 +93,7 @@ export default function PetForm({ type, userId }: Props) {
     e.preventDefault();
     setError(null);
 
-    if (!photoFile) { setError(tc.errorPhoto); return; }
+    if (type === "lost" && !photoFile) { setError(tc.errorPhoto); return; }
     const whatsappClean = whatsapp.trim().replace(/\D/g, "");
     if (!whatsappClean || whatsappClean.length < 8) { setError(tc.errorWhatsapp); return; }
     const whatsappFinal = whatsappClean.startsWith("55") ? whatsappClean : `55${whatsappClean}`;
@@ -101,7 +101,7 @@ export default function PetForm({ type, userId }: Props) {
 
     setSubmitting(true);
     try {
-      const photoUrl = await uploadPetPhoto(userId, photoFile);
+      const photoUrl = photoFile ? await uploadPetPhoto(userId, photoFile) : "";
       await createPet({
         user_id: userId,
         type,
@@ -168,16 +168,35 @@ export default function PetForm({ type, userId }: Props) {
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="font-body text-xs font-bold uppercase tracking-widest">{tc.labelPhoto}</label>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handlePhotoChange}
-          className="font-body text-sm"
-        />
-        {photoPreview && (
-          <img src={photoPreview} alt="Preview" className="w-32 h-32 object-cover border-3 border-border" />
-        )}
+        <label className="font-body text-xs font-bold uppercase tracking-widest">
+          {tc.labelPhoto}{type === "found" && <span className="opacity-50 normal-case ml-1">(opcional)</span>}
+        </label>
+        <label className="cursor-pointer">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handlePhotoChange}
+            className="sr-only"
+          />
+          {photoPreview ? (
+            <div className="relative w-40 h-40 border-3 border-border">
+              <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                <span className="font-body text-xs font-bold uppercase text-white">Trocar</span>
+              </div>
+            </div>
+          ) : (
+            <div className="border-3 border-border border-dashed bg-background flex flex-col items-center justify-center gap-3 py-8 px-6 hover:bg-foreground/5 transition-colors">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
+                <rect x="3" y="3" width="18" height="18" rx="0" />
+                <circle cx="8.5" cy="8.5" r="1.5" />
+                <path d="M21 15l-5-5L5 21" />
+              </svg>
+              <span className="font-body text-sm font-bold uppercase tracking-wide">Escolher foto</span>
+              <span className="font-body text-xs text-muted">JPG, PNG ou WEBP</span>
+            </div>
+          )}
+        </label>
       </div>
 
       <div className="flex flex-col gap-2">
