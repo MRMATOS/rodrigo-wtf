@@ -119,8 +119,11 @@ export default function PetForm({ type, userId }: Props) {
       });
       router.push("/ferramentas/radar-pet/meus-pets");
     } catch (err) {
-      const msg = err instanceof Error ? err.message : null;
-      setError(msg && msg.length < 200 ? msg : "Erro ao salvar. Tente novamente.");
+      const msg = err instanceof Error ? err.message : "";
+      const isRlsBlock = msg.includes("row-level security") || msg.includes("violates row-level");
+      setError(isRlsBlock
+        ? "Você já tem 2 pets ativos cadastrados. Resolva um antes de cadastrar outro."
+        : msg && msg.length < 200 ? msg : "Erro ao salvar. Tente novamente.");
     } finally {
       setSubmitting(false);
     }
