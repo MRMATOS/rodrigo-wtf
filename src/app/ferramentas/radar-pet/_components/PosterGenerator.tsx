@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import html2canvas from "html2canvas";
 import { QRCodeSVG } from "qrcode.react";
 import type { Pet } from "../_lib/supabase-pets";
@@ -10,11 +10,28 @@ interface Props {
   onClose: () => void;
 }
 
+const POSTER_W = 794;
+const POSTER_H = 1123;
+
 export default function PosterGenerator({ pet, onClose }: Props) {
   const posterRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+
   const petUrl = typeof window !== "undefined"
     ? `${window.location.origin}/ferramentas/radar-pet/pet/${pet.id}`
     : `/ferramentas/radar-pet/pet/${pet.id}`;
+
+  useEffect(() => {
+    function calcScale() {
+      const maxH = window.innerHeight * 0.82;
+      const maxW = window.innerWidth * 0.92;
+      const s = Math.min(maxH / POSTER_H, maxW / POSTER_W, 1);
+      setScale(s);
+    }
+    calcScale();
+    window.addEventListener("resize", calcScale);
+    return () => window.removeEventListener("resize", calcScale);
+  }, []);
 
   async function handleDownload() {
     if (!posterRef.current) return;
@@ -23,105 +40,195 @@ export default function PosterGenerator({ pet, onClose }: Props) {
       useCORS: true,
       backgroundColor: "#ffffff",
     });
-    const link = document.createElement("a");
-    link.download = `cartaz-${pet.name ?? "pet"}.png`;
-    link.href = canvas.toDataURL("image/png");
-    link.click();
+    canvas.toBlob((blob) => {
+      if (!blob) return;
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.download = `cartaz-${pet.name ?? "pet"}.png`;
+      link.href = url;
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }, "image/png");
   }
 
-  const caption = [
-    pet.name,
+  const statusLabel = pet.type === "lost" ? "PERDIDO" : "ENCONTRADO";
+
+  const rewardDisplay = pet.reward && pet.reward_amount
+    ? (pet.reward_amount.startsWith("R$") ? pet.reward_amount : `R$ ${pet.reward_amount}`)
+    : null;
+
+  const infoLine = [
     pet.breed,
     pet.neighborhood,
-  ].filter(Boolean).join(" · ");
+    rewardDisplay ? `Gratificação: ${rewardDisplay}` : null,
+  ].filter(Boolean).join("  ·  ");
 
   return (
     <>
-      <div className="fixed inset-0 z-[40] bg-black/70" onClick={onClose} />
-      <div className="fixed inset-0 z-[50] flex items-center justify-center p-6 overflow-auto pointer-events-none">
-        <div className="pointer-events-auto flex flex-col gap-4 items-center">
-          {/* Cartaz A4 — 794x1123px */}
-          <div
-            ref={posterRef}
-            style={{
-              width: "794px",
-              minHeight: "1123px",
-              backgroundColor: "#ffffff",
-              padding: "48px",
-              display: "flex",
-              flexDirection: "column",
-              gap: "24px",
-              fontFamily: "'Neue Haas Grotesk', 'Arial Black', sans-serif",
-              color: "#000000",
-            }}
-          >
-            {/* Título */}
-            <h1
-              style={{
-                fontSize: "96px",
-                fontWeight: "900",
-                textTransform: "uppercase",
-                lineHeight: 1,
-                letterSpacing: "-2px",
-                margin: 0,
-              }}
-            >
-              PROCURA-SE
-            </h1>
+      {/* Overlay */}
+      <div className="fixed inset-0 z-[40] bg-black/80" onClick={onClose} />
 
-            {/* Foto */}
-            <div
-              style={{
-                width: "100%",
-                height: "480px",
-                border: "4px solid #000",
-                overflow: "hidden",
-                flexShrink: 0,
-              }}
-            >
-              {pet.photo_url && (
-                <img
-                  src={pet.photo_url}
-                  alt={pet.name ?? "Pet"}
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                  crossOrigin="anonymous"
-                />
-              )}
-            </div>
+      {/* Wrapper scrollável */}
+      <div className="fixed inset-0 z-[50] flex flex-col items-center justify-start overflow-y-auto py-6 pointer-events-none">
+        <div className="pointer-events-auto flex flex-col items-center gap-4">
 
-            {/* Legenda */}
-            <div style={{ textAlign: "center" }}>
-              <p style={{ fontWeight: "700", fontSize: "22px", margin: 0 }}>
-                {caption}
-              </p>
-              {pet.reward && pet.reward_amount && (
-                <p style={{ fontWeight: "700", fontSize: "18px", margin: "8px 0 0 0" }}>
-                  Gratificação: {pet.reward_amount}
-                </p>
-              )}
-            </div>
+          {/* Container com altura real escalada — evita sobreposição com botões */}
+          <div style={{
+            width: `${POSTER_W * scale}px`,
+            height: `${POSTER_H * scale}px`,
+            position: "relative",
+            flexShrink: 0,
+          }}>
+            <div style={{
+              transform: `scale(${scale})`,
+              transformOrigin: "top left",
+              width: `${POSTER_W}px`,
+              position: "absolute",
+              top: 0,
+              left: 0,
+            }}>
+              {/* Cartaz A4 — 794×1123px */}
+              <div
+                ref={posterRef}
+                style={{
+                  width: `${POSTER_W}px`,
+                  minHeight: `${POSTER_H}px`,
+                  backgroundColor: "#ffffff",
+                  display: "flex",
+                  flexDirection: "column",
+                  fontFamily: "'Space Grotesk', 'Arial Black', sans-serif",
+                  color: "#000000",
+                  overflow: "hidden",
+                }}
+              >
+                {/* Cabeçalho escuro */}
+                <div style={{
+                  backgroundColor: "#111111",
+                  padding: "40px 48px 32px",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: "8px",
+                }}>
+                  <h1 style={{
+                    fontSize: "88px",
+                    fontWeight: "900",
+                    textTransform: "uppercase",
+                    lineHeight: 1,
+                    letterSpacing: "-2px",
+                    margin: 0,
+                    color: "#ffffff",
+                    textAlign: "center",
+                    fontFamily: "'Space Grotesk', 'Arial Black', sans-serif",
+                  }}>
+                    PROCURA-SE
+                  </h1>
+                  <span style={{
+                    fontSize: "20px",
+                    fontWeight: "700",
+                    letterSpacing: "4px",
+                    textTransform: "uppercase",
+                    color: pet.type === "lost" ? "#ef4444" : "#22c55e",
+                  }}>
+                    {statusLabel}
+                  </span>
+                </div>
 
-            {/* Descrição + QR Code */}
-            <div style={{ display: "flex", gap: "24px", alignItems: "flex-start", flex: 1 }}>
-              <p style={{ flex: 1, fontSize: "18px", fontWeight: "700", lineHeight: 1.5, margin: 0 }}>
-                {pet.description}
-              </p>
-              <div style={{ flexShrink: 0 }}>
-                <QRCodeSVG
-                  value={petUrl}
-                  size={160}
-                  bgColor="#ffffff"
-                  fgColor="#000000"
-                  level="M"
-                />
-                <p style={{ fontSize: "10px", textAlign: "center", marginTop: "4px", fontWeight: "600" }}>
-                  Escaneie e avise!
-                </p>
+                {/* Foto como background-image (fix html2canvas object-fit) */}
+                {pet.photo_url && (
+                  <div style={{
+                    width: "100%",
+                    height: "480px",
+                    backgroundImage: `url(${pet.photo_url})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    flexShrink: 0,
+                    borderBottom: "4px solid #000",
+                  }} />
+                )}
+
+                {/* Bloco de informações */}
+                <div style={{
+                  backgroundColor: "#f4f4f4",
+                  padding: "28px 48px",
+                  borderBottom: "3px solid #ddd",
+                }}>
+                  {pet.name && (
+                    <p style={{
+                      fontSize: "32px",
+                      fontWeight: "800",
+                      margin: "0 0 6px 0",
+                      lineHeight: 1.1,
+                      fontFamily: "'Space Grotesk', 'Arial Black', sans-serif",
+                    }}>
+                      {pet.name}
+                    </p>
+                  )}
+                  {infoLine && (
+                    <p style={{
+                      fontSize: "16px",
+                      fontWeight: "600",
+                      color: "#555",
+                      margin: 0,
+                      lineHeight: 1.6,
+                    }}>
+                      {infoLine}
+                    </p>
+                  )}
+                </div>
+
+                {/* Descrição */}
+                <div style={{ padding: "24px 48px", flex: 1 }}>
+                  <p style={{
+                    fontSize: "17px",
+                    fontWeight: "500",
+                    lineHeight: 1.65,
+                    margin: 0,
+                    color: "#222",
+                  }}>
+                    {pet.description}
+                  </p>
+                </div>
+
+                {/* Rodapé escuro com QR */}
+                <div style={{
+                  backgroundColor: "#222222",
+                  padding: "28px 48px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: "24px",
+                }}>
+                  <div>
+                    <p style={{
+                      color: "#aaa",
+                      fontSize: "12px",
+                      fontWeight: "700",
+                      letterSpacing: "2px",
+                      textTransform: "uppercase",
+                      margin: "0 0 4px 0",
+                    }}>
+                      ESCANEIE E AVISE
+                    </p>
+                    <p style={{ color: "#fff", fontSize: "14px", fontWeight: "600", margin: 0 }}>
+                      rodrigo.wtf/radar-pet
+                    </p>
+                  </div>
+                  <div style={{ backgroundColor: "#fff", padding: "10px", flexShrink: 0 }}>
+                    <QRCodeSVG
+                      value={petUrl}
+                      size={120}
+                      bgColor="#ffffff"
+                      fgColor="#000000"
+                      level="M"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Controles */}
+          {/* Controles — sempre abaixo do cartaz */}
           <div className="flex gap-3">
             <button
               onClick={handleDownload}
