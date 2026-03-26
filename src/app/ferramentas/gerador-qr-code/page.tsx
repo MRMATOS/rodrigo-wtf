@@ -35,11 +35,12 @@ const DIMS: Record<TemplateId, { w: number; h: number }> = {
 // ─── Template props ───────────────────────────────────────────────────────────
 
 interface TplProps {
-  url:     string;
-  info:    string;
-  caption: string;
-  color:   string;
-  s?:      number; // scale multiplier
+  url:      string;
+  info:     string;
+  caption:  string;
+  color:    string;
+  noBorder?: boolean;
+  s?:       number; // scale multiplier
 }
 
 // ─── Template 1: Só o QR ─────────────────────────────────────────────────────
@@ -210,6 +211,7 @@ export default function GeradorQRCode() {
   const [template, setTemplate] = useState<TemplateId>("ticket");
   const [error,    setError]    = useState("");
   const [downloading, setDownloading] = useState(false);
+  const [noBorder,    setNoBorder]    = useState(false);
   const [previewScale, setPreviewScale] = useState(1);
   const [qrCount, setQrCount] = useState<number | null>(null);
 
@@ -278,7 +280,7 @@ export default function GeradorQRCode() {
   }, [hasContent, mode, tr.errorEmpty, template]);
 
   const previewUrl = qrValue || "https://rodrigo.wtf";
-  const tplProps: TplProps = { url: previewUrl, info, caption, color };
+  const tplProps: TplProps = { url: previewUrl, info, caption, color, noBorder };
 
   return (
     <main id="main-content" className="grid grid-cols-4 gap-4 md:gap-8">
@@ -446,7 +448,7 @@ export default function GeradorQRCode() {
               </button>
             ))}
           </div>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
             {COLORS.map((c) => (
               <button
                 key={c.value}
@@ -458,6 +460,17 @@ export default function GeradorQRCode() {
                 }`}
               />
             ))}
+            <button
+              onClick={() => setNoBorder((v) => !v)}
+              className={`flex items-center gap-2 font-body text-xs font-bold uppercase tracking-widest px-3 py-2 border-3 border-border transition-colors ${
+                noBorder ? "bg-foreground text-background" : "bg-background text-muted hover:text-foreground"
+              }`}
+            >
+              <span className="w-3 h-3 border-2 border-current flex items-center justify-center flex-shrink-0">
+                {noBorder && <span className="w-1.5 h-1.5 bg-current block" />}
+              </span>
+              Sem borda
+            </button>
           </div>
         </div>
       </section>
