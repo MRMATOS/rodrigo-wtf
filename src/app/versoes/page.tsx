@@ -5,6 +5,24 @@ export const metadata = {
 
 const versoes = [
   {
+    version: "3.0",
+    date: "Mar 2026",
+    changes: [
+      "Radar Pet: ferramenta para encontrar pets perdidos com mapa interativo",
+      "Radar Pet: cadastro de pets com foto, localização e contato via WhatsApp",
+      "Radar Pet: filtros por tipo, status e raio de distância",
+      "Radar Pet: visualização em mapa e lista com paginação",
+      "Radar Pet: geração de poster para compartilhamento",
+      "Radar Pet: limite de 2 pets ativos por usuário via RLS",
+      "Gerador de QR Code: templates Padrão, Ticket e A4",
+      "Gerador de QR Code: suporte a links, texto, Instagram, WhatsApp e Wi-Fi",
+      "Gerador de QR Code: contador público de QR codes gerados",
+      "Mapa do Sossego: modal de estatísticas com z-index corrigido",
+      "Segurança: rate limit por IP na API de QR stats",
+      "Segurança: sanitização de inputs e validação de arquivos no Radar Pet",
+    ],
+  },
+  {
     version: "2.2",
     date: "Mar 2026",
     changes: [
