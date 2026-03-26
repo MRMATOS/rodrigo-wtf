@@ -87,7 +87,7 @@ function TplQrOnly({ url, caption, color, noBorder, s = 1 }: TplProps) {
 
 // ─── Template 2: Ticket ───────────────────────────────────────────────────────
 
-function TplTicket({ url, info, caption, color, s = 1 }: TplProps) {
+function TplTicket({ url, info, caption, color, noBorder, s = 1 }: TplProps) {
   const { w, h } = DIMS.ticket;
   const qrSize   = Math.round(160 * s);
 
@@ -112,7 +112,8 @@ function TplTicket({ url, info, caption, color, s = 1 }: TplProps) {
       </div>
 
       <div style={{
-        width: 256 * s, backgroundColor: color,
+        width: 256 * s,
+        backgroundColor: noBorder ? "#ffffff" : color,
         borderRadius: `0 ${24 * s}px ${24 * s}px 0`,
         display: "flex", flexDirection: "column",
         alignItems: "center", justifyContent: "center",
@@ -123,7 +124,12 @@ function TplTicket({ url, info, caption, color, s = 1 }: TplProps) {
           <QRCodeCanvas value={url} size={qrSize} bgColor="#ffffff" fgColor="#000000" level="M" />
         </div>
         {caption && (
-          <span style={{ fontSize: 13 * s, color: "#ffffff", opacity: 0.85, textAlign: "center" }}>
+          <span style={{
+            fontSize: 13 * s,
+            color: noBorder ? color : "#ffffff",
+            opacity: 0.85,
+            textAlign: "center",
+          }}>
             {caption}
           </span>
         )}
