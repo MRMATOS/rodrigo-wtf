@@ -8,14 +8,12 @@ import { getActivePetsByCity, getCityWithMostPets } from "./_lib/supabase-pets";
 import type { Pet } from "./_lib/supabase-pets";
 import MapHub from "./_components/MapHub";
 import PetFeed from "./_components/PetFeed";
-import FilterBar from "./_components/FilterBar";
 import LoginModal from "./_components/LoginModal";
 
 type FilterType = "all" | "lost" | "found";
 type ViewMode = "map" | "list";
 const PAGE_SIZE = 5;
 
-// Componente separado para lidar com useSearchParams (requer Suspense)
 function LoginRedirectHandler({ user, loading }: { user: ReturnType<typeof useAuth>["user"]; loading: boolean }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -44,22 +42,17 @@ export default function RadarPetHub() {
   const [cityInput, setCityInput] = useState<string>("");
   const [pets, setPets] = useState<Pet[]>([]);
   const [filter, setFilter] = useState<FilterType>("all");
-  const [neighborhood, setNeighborhood] = useState<string>("");
   const [showLogin, setShowLogin] = useState(false);
   const [pendingAction, setPendingAction] = useState<"lost" | "found" | null>(null);
-  const [geoCity, setGeoCity] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("map");
   const [page, setPage] = useState(0);
+  const [gpsLoading, setGpsLoading] = useState(false);
 
-  // Carrega cidade mais popular imediatamente como fallback
-  // e sobrescreve com GPS se disponível
   useEffect(() => {
-    // Fallback imediato: cidade com mais pets (não espera GPS)
     getCityWithMostPets().then((topCity) => {
       if (topCity) setCity((prev) => prev || topCity);
     });
 
-    // Tenta GPS em paralelo — se resolver, sobrescreve
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         const { latitude, longitude } = pos.coords;
@@ -69,17 +62,9 @@ export default function RadarPetHub() {
           );
           const data = await res.json();
           const detectedCity =
-            data.address?.city ||
-            data.address?.town ||
-            data.address?.village ||
-            "";
-          if (detectedCity) {
-            setGeoCity(detectedCity);
-            setCity(detectedCity);
-          }
-        } catch {
-          // silently fail
-        }
+            data.address?.city || data.address?.town || data.address?.village || "";
+          if (detectedCity) setCity(detectedCity);
+        } catch { /* silent */ }
       },
       () => {},
       { timeout: 5000 }
@@ -100,34 +85,43 @@ export default function RadarPetHub() {
     if (city) loadPets(city);
   }, [city, loadPets]);
 
-  const filteredPets = pets.filter((p) => {
-    if (filter !== "all" && p.type !== filter) return false;
-    if (neighborhood && !p.neighborhood.toLowerCase().includes(neighborhood.toLowerCase())) return false;
-    return true;
-  });
+  function toggleFilter(type: "lost" | "found") {
+    setFilter((prev) => prev === type ? "all" : type);
+    setPage(0);
+  }
 
+  function handleGps() {
+    setGpsLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const { latitude, longitude } = pos.coords;
+        try {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+          );
+          const data = await res.json();
+          const detectedCity =
+            data.address?.city || data.address?.town || data.address?.village || "";
+          if (detectedCity) setCity(detectedCity);
+        } catch { /* silent */ }
+        setGpsLoading(false);
+      },
+      () => setGpsLoading(false),
+      { timeout: 8000 }
+    );
+  }
+
+  const filteredPets = pets.filter((p) => filter === "all" || p.type === filter);
   const totalPages = Math.ceil(filteredPets.length / PAGE_SIZE);
   const pagedPets = filteredPets.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
-  function handleFilterChange(f: FilterType) { setFilter(f); setPage(0); }
-  function handleNeighborhoodChange(n: string) { setNeighborhood(n); setPage(0); }
-
   function handleAction(action: "lost" | "found") {
-    if (!user) {
-      setPendingAction(action);
-      setShowLogin(true);
-      return;
-    }
+    if (!user) { setPendingAction(action); setShowLogin(true); return; }
     router.push(`/ferramentas/radar-pet/cadastro?type=${action}`);
-  }
-
-  function handleLogin() {
-    signInWithGoogle();
   }
 
   return (
     <main id="main-content" className="flex flex-col gap-4 md:gap-8">
-      {/* Lida com redirect pós-login sem bloquear o prerender */}
       <Suspense fallback={null}>
         <LoginRedirectHandler user={user} loading={loading} />
       </Suspense>
@@ -164,64 +158,105 @@ export default function RadarPetHub() {
         </div>
       </header>
 
-      {/* City selector (shown when GPS unavailable) */}
-      {!geoCity && (
-        <div className="border-3 border-border brutal-shadow bg-background p-6 flex flex-col sm:flex-row gap-3">
-          <p className="font-body text-sm text-muted flex-1">{t.radarPet.cityPrompt}</p>
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={cityInput}
-              onChange={(e) => setCityInput(e.target.value)}
-              placeholder={t.radarPet.cityPlaceholder}
-              className="border-3 border-border bg-background font-body text-sm px-3 py-2 w-48 focus:outline-none"
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && cityInput.trim()) setCity(cityInput.trim());
-              }}
-            />
+      {/* Card unificado: filtros + busca por cidade */}
+      <div className="border-3 border-border brutal-shadow bg-background p-4 flex flex-col gap-3">
+        {/* Linha 1: filtros (esquerda) + mapa/lista (direita) */}
+        <div className="flex items-center justify-between gap-2 flex-wrap">
+          {/* Filtros Perdido / Encontrado */}
+          <div className="flex border-3 border-border" style={{ boxShadow: "3px 3px 0 var(--border)" }}>
             <button
-              onClick={() => { if (cityInput.trim()) setCity(cityInput.trim()); }}
-              className="brutal-btn brutal-btn-adaptive px-4 py-2 font-body text-sm font-bold uppercase"
+              onClick={() => toggleFilter("lost")}
+              className={`px-4 py-2 font-body text-xs font-bold uppercase tracking-wide transition-colors ${
+                filter === "lost"
+                  ? "bg-red-600 text-white"
+                  : "bg-background text-foreground hover:bg-red-50 dark:hover:bg-red-950"
+              }`}
             >
-              {t.radarPet.citySearch}
+              Perdido
+            </button>
+            <button
+              onClick={() => toggleFilter("found")}
+              className={`px-4 py-2 font-body text-xs font-bold uppercase tracking-wide border-l-3 border-border transition-colors ${
+                filter === "found"
+                  ? "bg-green-600 text-white"
+                  : "bg-background text-foreground hover:bg-green-50 dark:hover:bg-green-950"
+              }`}
+            >
+              Encontrado
             </button>
           </div>
-        </div>
-      )}
 
-      {/* Filters + View toggle */}
-      {city && (
-        <div className="flex flex-col gap-3">
-          <FilterBar
-            filter={filter}
-            neighborhood={neighborhood}
-            onFilterChange={handleFilterChange}
-            onNeighborhoodChange={handleNeighborhoodChange}
-          />
-          <div className="flex gap-0 border-3 border-border brutal-shadow w-fit">
+          {/* Mapa / Lista */}
+          <div className="flex border-3 border-border" style={{ boxShadow: "3px 3px 0 var(--border)" }}>
             <button
               onClick={() => setViewMode("map")}
-              className={`px-6 py-2 font-body text-sm font-bold uppercase tracking-wide transition-colors ${
+              className={`px-4 py-2 font-body text-xs font-bold uppercase tracking-wide transition-colors ${
                 viewMode === "map"
-                  ? "bg-foreground text-background"
-                  : "bg-background text-foreground hover:bg-foreground/10"
+                  ? "bg-blue text-white"
+                  : "bg-background text-foreground hover:bg-blue/10"
               }`}
             >
               Mapa
             </button>
             <button
               onClick={() => { setViewMode("list"); setPage(0); }}
-              className={`px-6 py-2 font-body text-sm font-bold uppercase tracking-wide border-l-3 border-border transition-colors ${
+              className={`px-4 py-2 font-body text-xs font-bold uppercase tracking-wide border-l-3 border-border transition-colors ${
                 viewMode === "list"
-                  ? "bg-foreground text-background"
-                  : "bg-background text-foreground hover:bg-foreground/10"
+                  ? "bg-blue text-white"
+                  : "bg-background text-foreground hover:bg-blue/10"
               }`}
             >
               Lista
             </button>
           </div>
         </div>
-      )}
+
+        {/* Linha 2: busca por cidade + botão GPS */}
+        <div className="flex gap-2 items-center">
+          <input
+            type="text"
+            value={cityInput}
+            onChange={(e) => setCityInput(e.target.value)}
+            placeholder="Permita a localização ou busque pela cidade"
+            className="border-3 border-border bg-background font-body text-sm px-3 py-2 flex-1 focus:outline-none"
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && cityInput.trim()) setCity(cityInput.trim());
+            }}
+          />
+          <button
+            onClick={() => { if (cityInput.trim()) setCity(cityInput.trim()); }}
+            className="brutal-btn brutal-btn-adaptive px-4 py-2 font-body text-sm font-bold uppercase"
+          >
+            {t.radarPet.citySearch}
+          </button>
+          <button
+            onClick={handleGps}
+            disabled={gpsLoading}
+            title="Usar minha localização"
+            className="border-3 border-border bg-background px-3 py-2 hover:bg-foreground/5 disabled:opacity-50 transition-colors"
+            aria-label="Usar localização"
+          >
+            {gpsLoading ? (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="animate-spin">
+                <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+              </svg>
+            ) : (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
+                <circle cx="12" cy="12" r="3" />
+                <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
+                <path d="M12 9a3 3 0 0 0 0 6 3 3 0 0 0 0-6z" fill="currentColor" fillOpacity=".2" />
+              </svg>
+            )}
+          </button>
+        </div>
+        {city && (
+          <p className="font-body text-xs text-muted">
+            Mostrando: <strong>{city}</strong>
+            {filter !== "all" && <> · {filter === "lost" ? "Perdidos" : "Encontrados"}</>}
+            {" "}({filteredPets.length} {filteredPets.length === 1 ? "resultado" : "resultados"})
+          </p>
+        )}
+      </div>
 
       {/* Map mode */}
       {city && viewMode === "map" && (
@@ -232,7 +267,7 @@ export default function RadarPetHub() {
 
       {/* List mode */}
       {city && viewMode === "list" && (
-        <div className="flex flex-col gap-0 border-3 border-border brutal-shadow">
+        <div className="flex flex-col border-3 border-border brutal-shadow">
           {pagedPets.length === 0 ? (
             <div className="p-8 text-center">
               <p className="font-body text-sm text-muted">{t.radarPet.emptyState}</p>
@@ -245,9 +280,8 @@ export default function RadarPetHub() {
             ))
           )}
 
-          {/* Paginação */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-between px-4 py-3 border-t-3 border-border bg-background">
+            <div className="flex items-center justify-between px-4 py-3 border-t-3 border-border">
               <button
                 onClick={() => setPage((p) => Math.max(0, p - 1))}
                 disabled={page === 0}
@@ -255,9 +289,7 @@ export default function RadarPetHub() {
               >
                 ← Anterior
               </button>
-              <span className="font-body text-xs text-muted">
-                {page + 1} / {totalPages}
-              </span>
+              <span className="font-body text-xs text-muted">{page + 1} / {totalPages}</span>
               <button
                 onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
                 disabled={page === totalPages - 1}
@@ -272,7 +304,7 @@ export default function RadarPetHub() {
 
       {showLogin && (
         <LoginModal
-          onLogin={handleLogin}
+          onLogin={signInWithGoogle}
           onClose={() => { setShowLogin(false); setPendingAction(null); }}
         />
       )}
