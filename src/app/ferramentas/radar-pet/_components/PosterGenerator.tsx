@@ -35,9 +35,9 @@ function PosterContent({ pet, petUrl, statusLabel, infoLine }: PosterContentProp
         overflow: "hidden",
       }}
     >
-      {/* Cabeçalho escuro */}
+      {/* Cabeçalho — fundo branco, sem tinta desnecessária */}
       <div style={{
-        backgroundColor: "#111111",
+        backgroundColor: "#ffffff",
         padding: "40px 48px 32px",
         display: "flex",
         flexDirection: "column",
@@ -51,21 +51,12 @@ function PosterContent({ pet, petUrl, statusLabel, infoLine }: PosterContentProp
           lineHeight: 1,
           letterSpacing: "-2px",
           margin: 0,
-          color: "#ffffff",
+          color: "#1a1a1a",
           textAlign: "center",
           fontFamily: "'Space Grotesk', 'Arial Black', sans-serif",
         }}>
           PROCURA-SE
         </h1>
-        <span style={{
-          fontSize: "20px",
-          fontWeight: "700",
-          letterSpacing: "4px",
-          textTransform: "uppercase",
-          color: pet.type === "lost" ? "#ef4444" : "#22c55e",
-        }}>
-          {statusLabel}
-        </span>
       </div>
 
       {/* Foto como background-image (fix html2canvas object-fit) */}
@@ -81,11 +72,11 @@ function PosterContent({ pet, petUrl, statusLabel, infoLine }: PosterContentProp
         }} />
       )}
 
-      {/* Bloco de informações */}
+      {/* Bloco de informações — fundo branco */}
       <div style={{
-        backgroundColor: "#f4f4f4",
+        backgroundColor: "#ffffff",
         padding: "28px 48px",
-        borderBottom: "3px solid #ddd",
+        borderBottom: "2px solid #000",
       }}>
         {pet.name && (
           <p style={{
@@ -111,8 +102,8 @@ function PosterContent({ pet, petUrl, statusLabel, infoLine }: PosterContentProp
         )}
       </div>
 
-      {/* Descrição */}
-      <div style={{ padding: "24px 48px", flex: 1 }}>
+      {/* Descrição — fundo branco, linha divisória embaixo */}
+      <div style={{ padding: "24px 48px", flex: 1, borderBottom: "2px solid #000" }}>
         <p style={{
           fontSize: "17px",
           fontWeight: "500",
@@ -124,9 +115,9 @@ function PosterContent({ pet, petUrl, statusLabel, infoLine }: PosterContentProp
         </p>
       </div>
 
-      {/* Rodapé escuro com QR */}
+      {/* Rodapé com QR — fundo branco, texto preto */}
       <div style={{
-        backgroundColor: "#222222",
+        backgroundColor: "#ffffff",
         padding: "28px 48px",
         display: "flex",
         alignItems: "center",
@@ -135,7 +126,7 @@ function PosterContent({ pet, petUrl, statusLabel, infoLine }: PosterContentProp
       }}>
         <div>
           <p style={{
-            color: "#aaa",
+            color: "#1a1a1a",
             fontSize: "12px",
             fontWeight: "700",
             letterSpacing: "2px",
@@ -144,7 +135,7 @@ function PosterContent({ pet, petUrl, statusLabel, infoLine }: PosterContentProp
           }}>
             ESCANEIE E AVISE
           </p>
-          <p style={{ color: "#fff", fontSize: "14px", fontWeight: "600", margin: 0 }}>
+          <p style={{ color: "#1a1a1a", fontSize: "14px", fontWeight: "600", margin: 0 }}>
             rodrigo.wtf/radar-pet
           </p>
         </div>
