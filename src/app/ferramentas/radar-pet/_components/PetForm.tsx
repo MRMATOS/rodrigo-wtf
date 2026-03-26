@@ -96,6 +96,7 @@ export default function PetForm({ type, userId }: Props) {
     if (!photoFile) { setError(tc.errorPhoto); return; }
     const whatsappClean = whatsapp.trim().replace(/\D/g, "");
     if (!whatsappClean || whatsappClean.length < 8) { setError(tc.errorWhatsapp); return; }
+    const whatsappFinal = whatsappClean.startsWith("55") ? whatsappClean : `55${whatsappClean}`;
     if (!coords) { setError(tc.errorLocation); return; }
 
     setSubmitting(true);
@@ -108,7 +109,7 @@ export default function PetForm({ type, userId }: Props) {
         breed: type === "lost" ? breed || undefined : undefined,
         description,
         photo_url: photoUrl,
-        whatsapp: whatsappClean,
+        whatsapp: whatsappFinal,
         neighborhood: neighborhood.trim(),
         lat: coords.lat,
         lng: coords.lng,
