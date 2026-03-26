@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useT } from "@/contexts/LanguageContext";
 import { useAuth } from "./_lib/use-auth";
-import { getActivePetsByCity } from "./_lib/supabase-pets";
+import { getActivePetsByCity, getCityWithMostPets } from "./_lib/supabase-pets";
 import type { Pet } from "./_lib/supabase-pets";
 import MapHub from "./_components/MapHub";
 import PetFeed from "./_components/PetFeed";
@@ -27,7 +27,7 @@ export default function RadarPetHub() {
   const [pendingAction, setPendingAction] = useState<"lost" | "found" | null>(null);
   const [geoCity, setGeoCity] = useState<string | null>(null);
 
-  // Tenta obter cidade via GPS
+  // Tenta obter cidade via GPS; se negado, usa cidade com mais pets
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
@@ -47,11 +47,13 @@ export default function RadarPetHub() {
             setCity(detectedCity);
           }
         } catch {
-          // silently fail, user will type city
+          // silently fail
         }
       },
-      () => {
-        // GPS denied — user types city manually
+      async () => {
+        // GPS negado — carregar cidade com mais pets como padrão
+        const topCity = await getCityWithMostPets();
+        if (topCity) setCity(topCity);
       }
     );
   }, []);
@@ -168,11 +170,7 @@ export default function RadarPetHub() {
             <PetFeed pets={filteredPets} emptyLabel={t.radarPet.emptyState} />
           </div>
         </div>
-      ) : (
-        <div className="border-3 border-border brutal-shadow bg-background p-12 text-center">
-          <p className="font-body text-muted">{t.radarPet.cityPrompt}</p>
-        </div>
-      )}
+      ) : null}
 
       {showLogin && (
         <LoginModal
