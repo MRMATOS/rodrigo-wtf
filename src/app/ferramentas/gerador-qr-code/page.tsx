@@ -120,9 +120,13 @@ function TplTicket({ url, info, caption, color, noBorder, s = 1 }: TplProps) {
         padding: `${24 * s}px ${24 * s}px ${16 * s}px`,
         gap: 10 * s, flexShrink: 0,
       }}>
-        <div style={{ backgroundColor: "#ffffff", padding: 8 * s, borderRadius: 8 * s }}>
+        {noBorder ? (
           <QRCodeCanvas value={url} size={qrSize} bgColor="#ffffff" fgColor="#000000" level="M" />
-        </div>
+        ) : (
+          <div style={{ backgroundColor: "#ffffff", padding: 8 * s, borderRadius: 8 * s }}>
+            <QRCodeCanvas value={url} size={qrSize} bgColor="#ffffff" fgColor="#000000" level="M" />
+          </div>
+        )}
         {caption && (
           <span style={{
             fontSize: 13 * s,
